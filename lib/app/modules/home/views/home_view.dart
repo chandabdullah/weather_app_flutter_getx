@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 
 import 'package:get/get.dart';
+import 'package:weather_app/app/constants/app_constants.dart';
+import 'package:weather_app/app/routes/app_pages.dart';
+import 'package:weather_app/config/theme/my_gradient.dart';
 import 'package:weather_icons/weather_icons.dart';
 import 'package:intl/intl.dart';
 
@@ -14,9 +18,14 @@ class HomeView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF054075),
+        backgroundColor: Get.theme.primaryColor,
+        elevation: 0,
         title: GestureDetector(
-          onTap: () {},
+          onTap: () {
+            Get.toNamed(
+              Routes.LOCATIONS,
+            );
+          },
           child: const Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -48,57 +57,59 @@ class HomeView extends GetView<HomeController> {
           ),
           const Gap(20),
         ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(60),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: kPadding,
+                      vertical: 4,
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "31",
+                          style: Get.textTheme.displayLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const Icon(
+                          WeatherIcons.celsius,
+                          size: 30,
+                          color: Colors.white,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const Icon(
+                WeatherIcons.cloudy,
+                size: 50,
+                color: Colors.white,
+              ),
+            ],
+          ),
+        ),
       ),
       body: Container(
         height: Get.height,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color(0xFF053f76),
-              Color(0xFF054075),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+        decoration: BoxDecoration(
+          gradient: MyGradient.defaultGradient(),
         ),
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(kPadding),
           child: SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Column(
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "31",
-                              style: Get.textTheme.displayLarge?.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                            const Icon(
-                              WeatherIcons.celsius,
-                              size: 50,
-                              color: Colors.white,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const Gap(20),
-                    const Icon(
-                      WeatherIcons.cloudy,
-                      size: 50,
-                      color: Colors.white,
-                    ),
-                  ],
-                ),
-                const Gap(10),
+                // const Gap(10),
                 Text(
                   "Party Cloud",
                   style: Get.textTheme.titleMedium?.copyWith(
@@ -121,10 +132,10 @@ class HomeView extends GetView<HomeController> {
                 ),
                 const Gap(20),
                 Container(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(kSpacing),
                   decoration: BoxDecoration(
                     // color: Colors.grey[300],
-                    color: Colors.white.withOpacity(.3),
+                    color: Get.theme.cardColor.withOpacity(.3),
                     borderRadius: BorderRadius.circular(7),
                   ),
                   child: Column(
@@ -142,19 +153,24 @@ class HomeView extends GetView<HomeController> {
                 ),
                 const Gap(20),
                 Container(
-                  padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     // color: Colors.grey[300],
-                    color: Colors.white.withOpacity(.3),
+                    color: Get.theme.cardColor.withOpacity(.3),
                     borderRadius: BorderRadius.circular(7),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Text(
-                        "Hourly Forecast",
-                        style: Get.textTheme.bodyLarge?.copyWith(
-                          color: Colors.white,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: kSpacing,
+                          vertical: kSpacing / 2,
+                        ),
+                        child: Text(
+                          "Hourly Forecast",
+                          style: Get.textTheme.bodyLarge?.copyWith(
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                       const Divider(
@@ -204,10 +220,10 @@ class HomeView extends GetView<HomeController> {
                 ),
                 const Gap(20),
                 Container(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(kSpacing),
                   decoration: BoxDecoration(
                     // color: Colors.grey[300],
-                    color: Colors.white.withOpacity(.3),
+                    color: Get.theme.cardColor.withOpacity(.3),
                     borderRadius: BorderRadius.circular(7),
                   ),
                   child: Column(
