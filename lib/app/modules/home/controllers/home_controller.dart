@@ -1,11 +1,11 @@
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
-  //TODO: Implement HomeController
+  getLocationData() async {}
 
-  final count = 0.obs;
   @override
   void onInit() {
+    getLocationData();
     super.onInit();
   }
 
@@ -18,6 +18,4 @@ class HomeController extends GetxController {
   void onClose() {
     super.onClose();
   }
-
-  void increment() => count.value++;
 }

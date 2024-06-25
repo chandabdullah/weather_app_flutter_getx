@@ -8,27 +8,38 @@ import 'package:weather_icons/weather_icons.dart';
 import '../controllers/locations_controller.dart';
 
 class LocationsView extends GetView<LocationsController> {
-  const LocationsView({Key? key}) : super(key: key);
+  const LocationsView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: Get.theme.cardColor,
-        shape: const CircleBorder(),
-        child: Icon(
-          Icons.add,
-          color: Get.theme.primaryColor,
-        ),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {},
+      //   backgroundColor: Get.theme.cardColor,
+      //   shape: const CircleBorder(),
+      //   child: Icon(
+      //     Icons.add,
+      //     color: Get.theme.primaryColor,
+      //   ),
+      // ),
       appBar: AppBar(
         title: const Text('Locations'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(
+              Icons.add,
+            ),
+          ),
+          const Gap(10),
+        ],
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(50),
+          preferredSize: const Size.fromHeight(60),
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: kPadding,
+              vertical: 8,
             ),
             child: TextField(
               cursorColor: Get.theme.primaryColor,
@@ -46,7 +57,7 @@ class LocationsView extends GetView<LocationsController> {
       body: SafeArea(
         child: ListView.separated(
           padding: const EdgeInsets.all(kPadding),
-          itemCount: 3,
+          itemCount: 9,
           separatorBuilder: (BuildContext context, int index) {
             return const Gap(20);
           },

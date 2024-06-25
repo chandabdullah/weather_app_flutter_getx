@@ -27,7 +27,7 @@ void main() async {
       builder: (context, child) {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
-          title: "Finance Tracking",
+          title: "Weather App",
           initialRoute: AppPages.INITIAL,
           getPages: AppPages.routes,
           builder: (context, widget) {
