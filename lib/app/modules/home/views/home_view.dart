@@ -1,11 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 
 import 'package:get/get.dart';
 import 'package:weather_app/app/constants/app_constants.dart';
 import 'package:weather_app/app/routes/app_pages.dart';
+import 'package:weather_app/app/services/api_call_status.dart';
 import 'package:weather_app/config/theme/my_gradient.dart';
 import 'package:weather_icons/weather_icons.dart';
 import 'package:intl/intl.dart';
@@ -49,13 +48,19 @@ class HomeView extends GetView<HomeController> {
           ),
           centerTitle: false,
           actions: [
-            Text(
-              DateFormat(DateFormat.ABBR_MONTH_DAY).format(DateTime.now()),
-              style: Get.textTheme.bodyLarge?.copyWith(
-                color: Colors.white,
-              ),
+            // Text(
+            //   DateFormat(DateFormat.ABBR_MONTH_DAY).format(DateTime.now()),
+            //   style: Get.textTheme.bodyLarge?.copyWith(
+            //     color: Colors.white,
+            //   ),
+            // ),
+            IconButton(
+              onPressed: () {
+                controller.getLocationData();
+              },
+              icon: const Icon(Icons.settings),
             ),
-            const Gap(20),
+            const Gap(10),
           ],
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(70),
@@ -70,35 +75,51 @@ class HomeView extends GetView<HomeController> {
                         left: kPadding,
                       ),
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            "31",
-                            style: Get.textTheme.displayLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                controller.apiCallStatus ==
+                                        ApiCallStatus.success
+                                    ? "${controller.currentWeather?.temp?.toStringAsFixed(0)}"
+                                    : "__",
+                                style: Get.textTheme.displayLarge?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const Icon(
+                                WeatherIcons.celsius,
+                                size: 40,
+                                color: Colors.white,
+                              ),
+                            ],
+                          ),
+                          if (controller.isLocationEnabled)
+                            // Image.network(
+                            //   'https://openweathermap.org/img/wn/02d@2x.png',
+                            //   height: 100,
+                            //   width: 100,
+                            // ),
+                            const Icon(
+                              WeatherIcons.cloudy,
+                              size: 50,
                               color: Colors.white,
                             ),
-                          ),
-                          const Icon(
-                            WeatherIcons.celsius,
-                            size: 40,
-                            color: Colors.white,
-                          ),
                         ],
                       ),
                     ),
                   ],
                 ),
-                // Image.network(
-                //   'https://openweathermap.org/img/wn/02d@2x.png',
-                //   height: 100,
-                //   width: 100,
-                // ),
-                const Icon(
-                  WeatherIcons.cloudy,
-                  size: 50,
-                  color: Colors.white,
+                const Spacer(),
+                Text(
+                  DateFormat(DateFormat.ABBR_MONTH_DAY).format(DateTime.now()),
+                  style: Get.textTheme.bodyLarge?.copyWith(
+                    color: Colors.white,
+                  ),
                 ),
+                const Gap(20),
               ],
             ),
           ),
