@@ -126,6 +126,7 @@ class Current {
   List<Weather>? weather;
   double? pop;
   Rain? rain;
+  Rain? snow;
 
   Current({
     this.dt,
@@ -145,6 +146,7 @@ class Current {
     this.weather,
     this.pop,
     this.rain,
+    this.snow,
   });
 
   factory Current.fromJson(Map<String, dynamic> json) => Current(
@@ -168,6 +170,7 @@ class Current {
                 json["weather"]!.map((x) => Weather.fromJson(x))),
         pop: json["pop"]?.toDouble(),
         rain: json["rain"] == null ? null : Rain.fromJson(json["rain"]),
+        snow: json["snow"] == null ? null : Rain.fromJson(json["snow"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -190,6 +193,7 @@ class Current {
             : List<dynamic>.from(weather!.map((x) => x.toJson())),
         "pop": pop,
         "rain": rain?.toJson(),
+        "snow": snow?.toJson(),
       };
 }
 
@@ -247,20 +251,33 @@ enum Description {
   SCATTERED_CLOUDS
 }
 
-final descriptionValues = EnumValues({
-  "broken clouds": Description.BROKEN_CLOUDS,
-  "clear sky": Description.CLEAR_SKY,
-  "few clouds": Description.FEW_CLOUDS,
-  "light rain": Description.LIGHT_RAIN,
-  "moderate rain": Description.MODERATE_RAIN,
-  "overcast clouds": Description.OVERCAST_CLOUDS,
-  "scattered clouds": Description.SCATTERED_CLOUDS
-});
+final descriptionValues = EnumValues(
+  {
+    "broken clouds": Description.BROKEN_CLOUDS,
+    "clear sky": Description.CLEAR_SKY,
+    "few clouds": Description.FEW_CLOUDS,
+    "light rain": Description.LIGHT_RAIN,
+    "moderate rain": Description.MODERATE_RAIN,
+    "overcast clouds": Description.OVERCAST_CLOUDS,
+    "scattered clouds": Description.SCATTERED_CLOUDS
+  },
+  {
+    Description.BROKEN_CLOUDS: "broken clouds",
+    Description.CLEAR_SKY: "clear sky",
+    Description.FEW_CLOUDS: "few clouds",
+    Description.LIGHT_RAIN: "light rain",
+    Description.MODERATE_RAIN: "moderate rain",
+    Description.OVERCAST_CLOUDS: "overcast clouds",
+    Description.SCATTERED_CLOUDS: "scattered clouds"
+  },
+);
 
 enum Main { CLEAR, CLOUDS, RAIN }
 
-final mainValues =
-    EnumValues({"Clear": Main.CLEAR, "Clouds": Main.CLOUDS, "Rain": Main.RAIN});
+final mainValues = EnumValues(
+  {"Clear": Main.CLEAR, "Clouds": Main.CLOUDS, "Rain": Main.RAIN},
+  {Main.CLEAR: "Clear", Main.CLOUDS: "Clouds", Main.RAIN: "Rain"},
+);
 
 class Daily {
   int? dt;
@@ -447,9 +464,9 @@ class Minutely {
 
 class EnumValues<T> {
   Map<String, T> map;
-  late Map<T, String> reverseMap;
+  Map<T, String> reverseMap;
 
-  EnumValues(this.map);
+  EnumValues(this.map, this.reverseMap);
 
   Map<T, String> get reverse {
     reverseMap = map.map((k, v) => MapEntry(v, k));

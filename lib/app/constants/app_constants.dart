@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+Duration apiCallAfter = const Duration(hours: 1);
+
 const double kPadding = 16.0;
 const double kSpacing = 12.0;
 const double kBorderRadius = 8.0;

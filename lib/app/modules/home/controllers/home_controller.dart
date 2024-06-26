@@ -1,6 +1,11 @@
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:location/location.dart';
+import 'package:logger/logger.dart';
+import 'package:weather_app/app/constants/app_constants.dart';
+import 'package:weather_app/app/data/local/my_shared_pref.dart';
 import 'package:weather_app/app/environment/environment.dart';
+import 'package:weather_app/app/models/cities_countries_model.dart';
 import 'package:weather_app/app/models/weather_model.dart';
 import 'package:weather_app/app/services/api_call_status.dart';
 import 'package:weather_app/app/services/base_client.dart';
@@ -9,28 +14,76 @@ import 'package:weather_app/app/services/location_service.dart';
 class HomeController extends GetxController {
   ApiCallStatus apiCallStatus = ApiCallStatus.holding;
 
-  Current? currentWeather;
+  String? currentCity;
   bool isLocationEnabled = false;
 
+  Current? currentWeather;
+  List<Current> hourlyForecast = [];
+  List<Daily> dailyForecast = [];
+
   getLocationData() async {
-    await LocationService.enableLocationService();
+    double? latitude;
+    double? longitude;
 
-    await LocationService.requestLocationPermission();
+    City? currentLocalCity = MySharedPref.getCurrentCity();
+    if (currentLocalCity == null) {
+      await LocationService.enableLocationService();
 
-    var status = await LocationService.getPermissionStatus;
-    print(status);
+      await LocationService.requestLocationPermission();
 
-    if (status != PermissionStatus.granted) return;
+      var status = await LocationService.getPermissionStatus;
 
-    LocationData? location = await LocationService.getCurrentLocation();
-    if (location == null) return;
-    isLocationEnabled = true;
+      if (status != PermissionStatus.granted) return;
+
+      LocationData? location = await LocationService.getCurrentLocation();
+      if (location == null) return;
+      isLocationEnabled = true;
+      update();
+
+      if (location.latitude == null || location.longitude == null) return;
+
+      latitude = location.latitude;
+      longitude = location.longitude;
+
+      City? city = await LocationService.getCityFromLatLng(
+        location.latitude ?? 0,
+        location.longitude ?? 0,
+      );
+      currentCity = city?.city;
+      MySharedPref.setCurrentCity(city ?? City());
+    } else {
+      currentCity = currentLocalCity.city;
+      latitude = currentLocalCity.lat;
+      longitude = currentLocalCity.lng;
+    }
+
     update();
 
-    print(location.latitude);
-    print(location.longitude);
+    DateTime now = DateTime.now();
+    DateTime? updatedDate = MySharedPref.getUpdateDate();
 
-    getWeatherInfo(location.latitude, location.longitude);
+    if (updatedDate == null) {
+      getWeatherInfo(latitude, longitude);
+    } else {
+      DateTime apiCallDate = updatedDate.add(apiCallAfter);
+
+      Logger().i(
+        "API will call on ${DateFormat('hh:mm').format(apiCallDate)} but now it's ${DateFormat('hh:mm').format(now)}",
+      );
+
+      if (now.isAfter(apiCallDate)) {
+        getWeatherInfo(latitude, longitude);
+      } else {
+        var response = MySharedPref.getTodaysWeather();
+        currentWeather = response?.current;
+        hourlyForecast = response?.hourly ?? [];
+        dailyForecast = response?.daily ?? [];
+
+        apiCallStatus = ApiCallStatus.success;
+      }
+    }
+
+    update();
   }
 
   getWeatherInfo(double? lat, double? lng) {
@@ -41,6 +94,7 @@ class HomeController extends GetxController {
         'lat': lat,
         'lon': lng,
         'units': 'metric',
+        'exclude': 'minutely',
         'appid': EnvironmentConfig.API_KEY,
       },
       onError: (e) {
@@ -54,6 +108,11 @@ class HomeController extends GetxController {
       onSuccess: (resp) {
         var response = weatherModelFromJson(resp.data);
         currentWeather = response.current;
+        hourlyForecast = response.hourly ?? [];
+        dailyForecast = response.daily ?? [];
+
+        MySharedPref.setTodaysWeather(response);
+        MySharedPref.setUpdateDate(DateTime.now());
 
         apiCallStatus = ApiCallStatus.success;
         update();

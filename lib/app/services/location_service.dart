@@ -1,6 +1,8 @@
+import 'package:geocoding/geocoding.dart' as geocoding;
 import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart'
     as permission_handler;
+import 'package:weather_app/app/models/cities_countries_model.dart';
 
 class LocationService {
   LocationService._();
@@ -41,5 +43,18 @@ class LocationService {
     var locationData = await location.getLocation();
 
     return locationData;
+  }
+
+  static Future<City?> getCityFromLatLng(double lat, double lng) async {
+    List<geocoding.Placemark> placeMarks =
+        await geocoding.placemarkFromCoordinates(lat, lng);
+
+    return City(
+      id: 0,
+      city: placeMarks.first.locality,
+      country: placeMarks.first.country,
+      lat: lat,
+      lng: lng,
+    );
   }
 }

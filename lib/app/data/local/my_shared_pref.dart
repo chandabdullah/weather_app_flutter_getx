@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 // import 'package:app/app/model/user_model.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:weather_app/app/models/cities_countries_model.dart';
+import 'package:weather_app/app/models/weather_model.dart';
 // import 'package:app/app/model/user_model.dart';
 
 import '../../../config/translations/localization_service.dart';
@@ -14,7 +16,9 @@ class MySharedPref {
   // static const String _userKey = 'user_key';
   static const String _currentLocalKey = 'current_local';
   static const String _lightThemeKey = 'is_theme_light';
-  static const String _isRememberMeKey = 'remember_me_key';
+  static const String _todayWeatherKey = 'today_weather';
+  static const String _updateDateKey = 'update_date';
+  static const String _currentCityKey = 'current_city';
 
   /// init get storage services
   static init() async {
@@ -47,16 +51,36 @@ class MySharedPref {
 
   static void clearSharePref() => _storage.erase();
 
-  static getIsRememberMe() {
-    var isRememberMe = (_storage.read(_isRememberMeKey));
-    return isRememberMe;
+  static void setTodaysWeather(WeatherModel weatherModel) {
+    var weatherData = weatherModelToJson(weatherModel);
+    _storage.write(_todayWeatherKey, weatherData);
   }
 
-  static setIsRememberMe(String value) {
-    _storage.write(_isRememberMeKey, value);
+  static WeatherModel? getTodaysWeather() {
+    var weatherData = _storage.read(_todayWeatherKey);
+    if (weatherData == null) return null;
+    return weatherModelFromJson(weatherData);
   }
 
-  static removeIsRememberMe() {
-    _storage.remove(_isRememberMeKey);
+  static setUpdateDate(DateTime dateTime) {
+    var date = dateTime.toIso8601String();
+    _storage.write(_updateDateKey, date);
+  }
+
+  static DateTime? getUpdateDate() {
+    var date = _storage.read(_updateDateKey);
+    if (date == null) return null;
+    return DateTime.parse(date);
+  }
+
+  static setCurrentCity(City city) {
+    var cityData = cityToJson(city);
+    _storage.write(_currentCityKey, cityData);
+  }
+
+  static City? getCurrentCity() {
+    var cityData = _storage.read(_currentCityKey);
+    if (cityData == null) return null;
+    return cityFromJson(cityData);
   }
 }

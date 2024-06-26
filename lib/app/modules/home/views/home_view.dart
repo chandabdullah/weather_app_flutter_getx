@@ -3,11 +3,16 @@ import 'package:gap/gap.dart';
 
 import 'package:get/get.dart';
 import 'package:weather_app/app/constants/app_constants.dart';
+import 'package:weather_app/app/models/weather_model.dart';
 import 'package:weather_app/app/routes/app_pages.dart';
 import 'package:weather_app/app/services/api_call_status.dart';
 import 'package:weather_app/config/theme/my_gradient.dart';
+import 'package:weather_app/utils/calculation.dart';
+import 'package:weather_app/utils/uv_calculator.dart';
+import 'package:weather_app/utils/weather_utils.dart';
 import 'package:weather_icons/weather_icons.dart';
 import 'package:intl/intl.dart';
+import 'package:weather_app/utils/datetime_utils.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -25,21 +30,21 @@ class HomeView extends GetView<HomeController> {
             onTap: () {
               Get.toNamed(Routes.LOCATIONS);
             },
-            child: const Row(
+            child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
+                const Icon(
                   Icons.location_on,
                   color: Colors.white,
                 ),
-                Gap(10),
+                const Gap(10),
                 Text(
-                  "Faisalabad",
-                  style: TextStyle(
+                  controller.currentCity ?? "",
+                  style: const TextStyle(
                     color: Colors.white,
                   ),
                 ),
-                Icon(
+                const Icon(
                   Icons.arrow_drop_down,
                   color: Colors.white,
                 ),
@@ -96,14 +101,24 @@ class HomeView extends GetView<HomeController> {
                               ),
                             ],
                           ),
-                          if (controller.isLocationEnabled)
-                            // Image.network(
-                            //   'https://openweathermap.org/img/wn/02d@2x.png',
-                            //   height: 100,
-                            //   width: 100,
-                            // ),
-                            const Icon(
-                              WeatherIcons.cloudy,
+                          const Gap(10),
+                          // if (controller.isLocationEnabled)
+                          if (controller
+                                  .currentWeather?.weather?.first.description !=
+                              null)
+                            //   Image.network(
+                            //     'https://openweathermap.org/img/wn/${controller.currentWeather?.weather?.first.icon}@2x.png',
+                            //     height: 100,
+                            //     width: 100,
+                            //   ),
+                            Icon(
+                              WeatherUtils.getWeatherIcon(
+                                controller
+                                    .currentWeather?.weather?.first.description,
+                                date: controller.currentWeather?.dt,
+                                sunrise: controller.currentWeather?.sunrise,
+                                sunset: controller.currentWeather?.sunset,
+                              ),
                               size: 50,
                               color: Colors.white,
                             ),
@@ -113,11 +128,38 @@ class HomeView extends GetView<HomeController> {
                   ],
                 ),
                 const Spacer(),
-                Text(
-                  DateFormat(DateFormat.ABBR_MONTH_DAY).format(DateTime.now()),
-                  style: Get.textTheme.bodyLarge?.copyWith(
-                    color: Colors.white,
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      DateFormat(DateFormat.ABBR_MONTH_DAY).format(
+                        controller.currentWeather?.dt
+                                ?.fromTimeStampToDateTime() ??
+                            DateTime.now(),
+                      ),
+                      style: Get.textTheme.titleLarge?.copyWith(
+                        color: Colors.white,
+                      ),
+                    ),
+                    const Gap(4),
+                    if (controller.currentWeather?.weather?.first.main != null)
+                      Text(
+                        descriptionValues.reverseMap[controller
+                                    .currentWeather?.weather?.first.description]
+                                .toString()
+                                .capitalize ??
+                            "",
+                        style: Get.textTheme.titleMedium?.copyWith(
+                          color: Colors.white,
+                        ),
+                      ),
+                    Text(
+                      "Feel like ${controller.currentWeather?.feelsLike?.toStringAsFixed(0)}ºC",
+                      style: Get.textTheme.titleMedium?.copyWith(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
                 ),
                 const Gap(20),
               ],
@@ -135,28 +177,7 @@ class HomeView extends GetView<HomeController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // const Gap(10),
-                  Text(
-                    "Party Cloud",
-                    style: Get.textTheme.titleMedium?.copyWith(
-                      color: Colors.white,
-                    ),
-                  ),
-                  const Gap(5),
-                  Text(
-                    "33º / 25º",
-                    style: Get.textTheme.titleMedium?.copyWith(
-                      color: Colors.white,
-                    ),
-                  ),
-                  const Gap(5),
-                  Text(
-                    "Feel like 32ºC",
-                    style: Get.textTheme.titleMedium?.copyWith(
-                      color: Colors.white,
-                    ),
-                  ),
-                  const Gap(20),
+                  // const Gap(20),
                   Container(
                     padding: const EdgeInsets.all(kSpacing),
                     decoration: BoxDecoration(
@@ -177,157 +198,244 @@ class HomeView extends GetView<HomeController> {
                     ),
                   ),
                   const Gap(20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.all(kSpacing),
-                          decoration: BoxDecoration(
-                            color: Get.theme.cardColor.withOpacity(.3),
-                            borderRadius: BorderRadius.circular(7),
-                          ),
-                          child: Column(
-                            children: [
-                              Icon(
-                                WeatherIcons.humidity,
-                                size: 30,
-                                color: Get.theme.cardColor,
-                              ),
-                              const Gap(8),
-                              Text(
-                                "Humidity",
-                                style: Get.textTheme.bodyLarge,
-                              ),
-                              Text(
-                                "94%",
-                                style: Get.textTheme.bodyMedium,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const Gap(20),
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.all(kSpacing),
-                          decoration: BoxDecoration(
-                            color: Get.theme.cardColor.withOpacity(.3),
-                            borderRadius: BorderRadius.circular(7),
-                          ),
-                          child: Column(
-                            children: [
-                              Icon(
-                                WeatherIcons.windy,
-                                size: 30,
-                                color: Get.theme.cardColor,
-                              ),
-                              const Gap(8),
-                              Text(
-                                "Wind",
-                                style: Get.textTheme.bodyLarge,
-                              ),
-                              Text(
-                                "7km/h",
-                                style: Get.textTheme.bodyMedium,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const Gap(20),
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.all(kSpacing),
-                          decoration: BoxDecoration(
-                            color: Get.theme.cardColor.withOpacity(.3),
-                            borderRadius: BorderRadius.circular(7),
-                          ),
-                          child: Column(
-                            children: [
-                              Icon(
-                                Icons.visibility,
-                                size: 30,
-                                color: Get.theme.cardColor,
-                              ),
-                              const Gap(8),
-                              Text(
-                                "Visibility",
-                                style: Get.textTheme.bodyLarge,
-                              ),
-                              Text(
-                                "1 km",
-                                style: Get.textTheme.bodyMedium,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Gap(20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.all(kSpacing),
-                          decoration: BoxDecoration(
-                            color: Get.theme.cardColor.withOpacity(.3),
-                            borderRadius: BorderRadius.circular(7),
-                          ),
-                          child: Column(
-                            children: [
-                              Icon(
-                                WeatherIcons.rain,
-                                size: 30,
-                                color: Get.theme.cardColor,
-                              ),
-                              const Gap(8),
-                              Text(
-                                "Rain",
-                                style: Get.textTheme.bodyLarge,
-                              ),
-                              Text(
-                                "0.21 mm/h",
-                                style: Get.textTheme.bodyMedium,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const Gap(20),
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.all(kSpacing),
-                          decoration: BoxDecoration(
-                            color: Get.theme.cardColor.withOpacity(.3),
-                            borderRadius: BorderRadius.circular(7),
-                          ),
-                          child: Column(
-                            children: [
-                              Icon(
-                                WeatherIcons.snow,
-                                size: 30,
-                                color: Get.theme.cardColor,
-                              ),
-                              const Gap(8),
-                              Text(
-                                "Snow",
-                                style: Get.textTheme.bodyLarge,
-                              ),
-                              Text(
-                                "0.11 mm/h",
-                                style: Get.textTheme.bodyMedium,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Gap(20),
 
+                  // * Humidity, Wind, Visibility
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      if (controller.currentWeather?.humidity != null)
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.all(kSpacing),
+                            decoration: BoxDecoration(
+                              color: Get.theme.cardColor.withOpacity(.3),
+                              borderRadius: BorderRadius.circular(7),
+                            ),
+                            child: Column(
+                              children: [
+                                Icon(
+                                  WeatherIcons.humidity,
+                                  size: 30,
+                                  color: Get.theme.cardColor,
+                                ),
+                                const Gap(8),
+                                Text(
+                                  "Humidity",
+                                  style: Get.textTheme.bodyLarge,
+                                ),
+                                Text(
+                                  "${controller.currentWeather?.humidity ?? 0}%",
+                                  style: Get.textTheme.bodyMedium,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      if (controller.currentWeather?.humidity != null)
+                        const Gap(20),
+                      if (controller.currentWeather?.windSpeed != null)
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.all(kSpacing),
+                            decoration: BoxDecoration(
+                              color: Get.theme.cardColor.withOpacity(.3),
+                              borderRadius: BorderRadius.circular(7),
+                            ),
+                            child: Column(
+                              children: [
+                                Icon(
+                                  WeatherIcons.windy,
+                                  size: 30,
+                                  color: Get.theme.cardColor,
+                                ),
+                                const Gap(8),
+                                Text(
+                                  "Wind",
+                                  style: Get.textTheme.bodyLarge,
+                                ),
+                                Text(
+                                  "${convertMsToKmh(controller.currentWeather?.windSpeed ?? 0)} km/h",
+                                  style: Get.textTheme.bodyMedium,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      if (controller.currentWeather?.windSpeed != null)
+                        const Gap(20),
+                      if (controller.currentWeather?.visibility != null)
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.all(kSpacing),
+                            decoration: BoxDecoration(
+                              color: Get.theme.cardColor.withOpacity(.3),
+                              borderRadius: BorderRadius.circular(7),
+                            ),
+                            child: Column(
+                              children: [
+                                Icon(
+                                  Icons.visibility,
+                                  size: 30,
+                                  color: Get.theme.cardColor,
+                                ),
+                                const Gap(8),
+                                Text(
+                                  "Visibility",
+                                  style: Get.textTheme.bodyLarge,
+                                ),
+                                Text(
+                                  "${((controller.currentWeather?.visibility ?? 0) / 1000).toStringAsFixed(0)} km",
+                                  style: Get.textTheme.bodyMedium,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  if ((controller.currentWeather?.humidity != null) ||
+                      (controller.currentWeather?.windSpeed != null) ||
+                      (controller.currentWeather?.visibility != null))
+                    const Gap(20),
+
+                  // * UV, Pressure
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      if (controller.currentWeather?.uvi != null)
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.all(kSpacing),
+                            decoration: BoxDecoration(
+                              color: Get.theme.cardColor.withOpacity(.3),
+                              borderRadius: BorderRadius.circular(7),
+                            ),
+                            child: Column(
+                              children: [
+                                Icon(
+                                  WeatherIcons.thermometer,
+                                  size: 30,
+                                  color: Get.theme.cardColor,
+                                ),
+                                const Gap(8),
+                                Text(
+                                  "UV",
+                                  style: Get.textTheme.bodyLarge,
+                                ),
+                                Text(
+                                  UVCalculator.getUVCalculator(
+                                    controller.currentWeather?.uvi ?? 0,
+                                  ),
+                                  style: Get.textTheme.bodyMedium,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      if (controller.currentWeather?.uvi != null) const Gap(20),
+                      if (controller.currentWeather?.pressure != null)
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.all(kSpacing),
+                            decoration: BoxDecoration(
+                              color: Get.theme.cardColor.withOpacity(.3),
+                              borderRadius: BorderRadius.circular(7),
+                            ),
+                            child: Column(
+                              children: [
+                                Icon(
+                                  WeatherIcons.barometer,
+                                  size: 30,
+                                  color: Get.theme.cardColor,
+                                ),
+                                const Gap(8),
+                                Text(
+                                  "Pressure",
+                                  style: Get.textTheme.bodyLarge,
+                                ),
+                                Text(
+                                  "${controller.currentWeather?.pressure ?? 0} hPa",
+                                  style: Get.textTheme.bodyMedium,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  if ((controller.currentWeather?.uvi != null) ||
+                      (controller.currentWeather?.pressure != null))
+                    const Gap(20),
+
+                  // * Rain, Snow
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      if (controller.currentWeather?.rain?.the1H != null)
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.all(kSpacing),
+                            decoration: BoxDecoration(
+                              color: Get.theme.cardColor.withOpacity(.3),
+                              borderRadius: BorderRadius.circular(7),
+                            ),
+                            child: Column(
+                              children: [
+                                Icon(
+                                  WeatherIcons.rain,
+                                  size: 30,
+                                  color: Get.theme.cardColor,
+                                ),
+                                const Gap(8),
+                                Text(
+                                  "Rain",
+                                  style: Get.textTheme.bodyLarge,
+                                ),
+                                Text(
+                                  "${controller.currentWeather?.rain?.the1H ?? 0} mm/h",
+                                  style: Get.textTheme.bodyMedium,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      if (controller.currentWeather?.rain?.the1H != null)
+                        const Gap(20),
+                      if (controller.currentWeather?.snow?.the1H != null)
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.all(kSpacing),
+                            decoration: BoxDecoration(
+                              color: Get.theme.cardColor.withOpacity(.3),
+                              borderRadius: BorderRadius.circular(7),
+                            ),
+                            child: Column(
+                              children: [
+                                Icon(
+                                  WeatherIcons.snow,
+                                  size: 30,
+                                  color: Get.theme.cardColor,
+                                ),
+                                const Gap(8),
+                                Text(
+                                  "Snow",
+                                  style: Get.textTheme.bodyLarge,
+                                ),
+                                Text(
+                                  "${controller.currentWeather?.snow?.the1H ?? 0} mm/h",
+                                  style: Get.textTheme.bodyMedium,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  if ((controller.currentWeather?.rain?.the1H != null) ||
+                      (controller.currentWeather?.snow?.the1H != null))
+                    const Gap(20),
+
+                  // * Hourly Forecast
                   Container(
                     decoration: BoxDecoration(
                       color: Get.theme.cardColor.withOpacity(.3),
@@ -357,7 +465,7 @@ class HomeView extends GetView<HomeController> {
                             scrollDirection: Axis.horizontal,
                             child: Row(
                               children: [
-                                for (var item in [0, 0, 0, 0, 0, 0, 0, 0])
+                                for (var hourly in controller.hourlyForecast)
                                   SizedBox(
                                     height: 100,
                                     width: 75,
@@ -366,18 +474,35 @@ class HomeView extends GetView<HomeController> {
                                           MainAxisAlignment.spaceAround,
                                       children: [
                                         Text(
-                                          "4:30PM",
+                                          DateFormat(DateFormat.HOUR_MINUTE)
+                                              .format(
+                                            hourly.dt
+                                                    ?.fromTimeStampToDateTime() ??
+                                                DateTime.now(),
+                                          ),
                                           style:
                                               Get.textTheme.bodySmall?.copyWith(
                                             color: Colors.white,
                                           ),
                                         ),
-                                        const Icon(
-                                          WeatherIcons.day_sunny,
+                                        // Image.network(
+                                        //   'https://openweathermap.org/img/wn/${hourly.weather?.first.icon}@2x.png',
+                                        //   height: 50,
+                                        //   width: 50,
+                                        // ),
+                                        Icon(
+                                          WeatherUtils.getWeatherIcon(
+                                            hourly.weather?.first.description,
+                                            date: hourly.dt,
+                                            sunrise: controller
+                                                .currentWeather?.sunrise,
+                                            sunset: controller
+                                                .currentWeather?.sunset,
+                                          ),
                                           color: Colors.white,
                                         ),
                                         Text(
-                                          "30ºC",
+                                          "${hourly.temp?.toStringAsFixed(0) ?? 0}ºC",
                                           style:
                                               Get.textTheme.bodySmall?.copyWith(
                                             color: Colors.white,
@@ -394,6 +519,8 @@ class HomeView extends GetView<HomeController> {
                     ),
                   ),
                   const Gap(20),
+
+                  // * Daily Forecast
                   Container(
                     padding: const EdgeInsets.all(kSpacing),
                     decoration: BoxDecoration(
@@ -413,7 +540,7 @@ class HomeView extends GetView<HomeController> {
                           color: Colors.grey,
                         ),
                         ListView.separated(
-                          itemCount: 7,
+                          itemCount: controller.dailyForecast.length,
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           separatorBuilder: (BuildContext context, int index) {
@@ -424,19 +551,31 @@ class HomeView extends GetView<HomeController> {
                             );
                           },
                           itemBuilder: (BuildContext context, int index) {
+                            Daily daily = controller.dailyForecast[index];
+
                             return Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Row(
                                   children: [
-                                    const Icon(
-                                      WeatherIcons.cloudy,
+                                    Icon(
+                                      WeatherUtils.getWeatherIcon(
+                                        daily.weather?.first.description,
+                                        date: daily.dt,
+                                        sunrise:
+                                            controller.currentWeather?.sunrise,
+                                        sunset:
+                                            controller.currentWeather?.sunset,
+                                      ),
                                       color: Colors.white,
                                       size: 30,
                                     ),
                                     const Gap(20),
                                     Text(
-                                      "Today",
+                                      DateFormat(DateFormat.MONTH_DAY).format(
+                                        daily.dt?.fromTimeStampToDateTime() ??
+                                            DateTime.now(),
+                                      ),
                                       style: Get.textTheme.bodyLarge?.copyWith(
                                         color: Colors.white,
                                       ),
@@ -445,14 +584,20 @@ class HomeView extends GetView<HomeController> {
                                 ),
                                 const Gap(20),
                                 Text(
-                                  "Cloudy",
+                                  mainValues
+                                          .reverseMap[daily.weather?.first.main]
+                                          .toString()
+                                          .capitalize ??
+                                      "",
                                   style: Get.textTheme.bodyLarge?.copyWith(
                                     color: Colors.white,
                                   ),
                                 ),
                                 const Gap(20),
                                 Text(
-                                  "20º/19º",
+                                  "${daily.temp?.max?.toStringAsFixed(0) ?? 0}º"
+                                  "/"
+                                  "${daily.temp?.min?.toStringAsFixed(0) ?? 0}º",
                                   style: Get.textTheme.bodyLarge?.copyWith(
                                     color: Colors.white,
                                   ),
