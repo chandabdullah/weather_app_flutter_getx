@@ -32,15 +32,17 @@ class WeatherUtils {
       case Description.LIGHT_RAIN:
         return isNight
             ? WeatherIcons.night_alt_lightning
-            : WeatherIcons.lightning;
+            : WeatherIcons.day_lightning;
       case Description.MODERATE_RAIN:
-        return isNight ? WeatherIcons.night_alt_rain : WeatherIcons.rain;
+        return isNight ? WeatherIcons.night_alt_rain : WeatherIcons.day_rain;
       case Description.OVERCAST_CLOUDS:
-        return isNight ? WeatherIcons.night_alt_cloudy : WeatherIcons.cloudy;
+        return isNight
+            ? WeatherIcons.night_alt_cloudy
+            : WeatherIcons.day_cloudy;
       case Description.SCATTERED_CLOUDS:
         return isNight
             ? WeatherIcons.night_alt_cloudy_windy
-            : WeatherIcons.cloudy_windy;
+            : WeatherIcons.day_cloudy_windy;
       default:
         return isNight ? WeatherIcons.night_clear : WeatherIcons.day_sunny;
     }

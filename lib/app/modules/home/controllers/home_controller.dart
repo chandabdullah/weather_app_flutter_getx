@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:logger/logger.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:weather_app/app/constants/app_constants.dart';
 import 'package:weather_app/app/data/local/my_shared_pref.dart';
 import 'package:weather_app/app/environment/environment.dart';
@@ -14,43 +15,51 @@ import 'package:weather_app/app/services/location_service.dart';
 class HomeController extends GetxController {
   ApiCallStatus apiCallStatus = ApiCallStatus.holding;
 
+  RefreshController smartRefreshController = RefreshController();
+
   String? currentCity;
   bool isLocationEnabled = false;
+
+  double? latitude;
+  double? longitude;
 
   Current? currentWeather;
   List<Current> hourlyForecast = [];
   List<Daily> dailyForecast = [];
 
   getLocationData() async {
-    double? latitude;
-    double? longitude;
+    // double? latitude;
+    // double? longitude;
 
     City? currentLocalCity = MySharedPref.getCurrentCity();
+
+    await LocationService.enableLocationService();
+
+    await LocationService.requestLocationPermission();
+
+    var status = await LocationService.getPermissionStatus;
+
+    if (status != PermissionStatus.granted) return;
+
+    LocationData? location = await LocationService.getCurrentLocation();
+    if (location == null) return;
+
+    isLocationEnabled = true;
+    update();
+
+    if (location.latitude == null || location.longitude == null) return;
+
+    latitude = location.latitude;
+    longitude = location.longitude;
+
+    City? city = await LocationService.getCityFromLatLng(
+      location.latitude ?? 0,
+      location.longitude ?? 0,
+    );
+    currentCity = city?.city;
+    MySharedPref.setCurrentCity(city ?? City());
+
     if (currentLocalCity == null) {
-      await LocationService.enableLocationService();
-
-      await LocationService.requestLocationPermission();
-
-      var status = await LocationService.getPermissionStatus;
-
-      if (status != PermissionStatus.granted) return;
-
-      LocationData? location = await LocationService.getCurrentLocation();
-      if (location == null) return;
-      isLocationEnabled = true;
-      update();
-
-      if (location.latitude == null || location.longitude == null) return;
-
-      latitude = location.latitude;
-      longitude = location.longitude;
-
-      City? city = await LocationService.getCityFromLatLng(
-        location.latitude ?? 0,
-        location.longitude ?? 0,
-      );
-      currentCity = city?.city;
-      MySharedPref.setCurrentCity(city ?? City());
     } else {
       currentCity = currentLocalCity.city;
       latitude = currentLocalCity.lat;
@@ -63,7 +72,7 @@ class HomeController extends GetxController {
     DateTime? updatedDate = MySharedPref.getUpdateDate();
 
     if (updatedDate == null) {
-      getWeatherInfo(latitude, longitude);
+      getWeatherInfo();
     } else {
       DateTime apiCallDate = updatedDate.add(apiCallAfter);
 
@@ -72,7 +81,7 @@ class HomeController extends GetxController {
       );
 
       if (now.isAfter(apiCallDate)) {
-        getWeatherInfo(latitude, longitude);
+        getWeatherInfo();
       } else {
         var response = MySharedPref.getTodaysWeather();
         currentWeather = response?.current;
@@ -86,15 +95,16 @@ class HomeController extends GetxController {
     update();
   }
 
-  getWeatherInfo(double? lat, double? lng) {
+  getWeatherInfo() {
     BaseClient.safeApiCall(
       '${EnvironmentConfig.BASE_URL}/data/3.0/onecall',
       RequestType.get,
       queryParameters: {
-        'lat': lat,
-        'lon': lng,
+        'lat': latitude,
+        'lon': longitude,
         'units': 'metric',
         'exclude': 'minutely',
+        'date': DateFormat('yyyy-MM-dd').format(DateTime.now().toLocal()),
         'appid': EnvironmentConfig.API_KEY,
       },
       onError: (e) {
