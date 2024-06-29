@@ -29,6 +29,7 @@ dependencies:
   pull_to_refresh: ^2.0.0
   flutter_svg: ^2.0.10+1
   flutter_weather_bg_null_safety: ^1.0.0
+  decorated_text: ^0.1.0
 
 dev_dependencies: 
   flutter_lints: 4.0.0

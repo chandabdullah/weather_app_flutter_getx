@@ -14,8 +14,8 @@ class LightThemeColors {
   static Color tertiaryColor = customTertiaryColor;
 
   //SCAFFOLD
-  static Color scaffoldBackgroundColor = primaryColor;
-  // static const Color scaffoldBackgroundColor = Color(0xFFFFFFFF); //? White
+  // static Color scaffoldBackgroundColor = primaryColor;
+  static const Color scaffoldBackgroundColor = Color(0xFFFFFFFF); //? White
   // static const Color scaffoldBackgroundColor = Color(0xFFfbfbfb); //?
   // static const Color scaffoldBackgroundColor = Color(0xFFf5f5f5); //? Light Gray
   // static const Color scaffoldBackgroundColor = Color(0xFFF8F8F8); //? Off-White

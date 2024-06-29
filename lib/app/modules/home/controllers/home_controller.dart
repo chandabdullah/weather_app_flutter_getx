@@ -18,6 +18,7 @@ class HomeController extends GetxController {
   RefreshController smartRefreshController = RefreshController();
 
   String? currentCity;
+  bool isLoadingLocation = false;
   bool isLocationEnabled = false;
 
   double? latitude;
@@ -28,8 +29,8 @@ class HomeController extends GetxController {
   List<Daily> dailyForecast = [];
 
   getLocationData() async {
-    // double? latitude;
-    // double? longitude;
+    isLoadingLocation = true;
+    true;
 
     City? currentLocalCity = MySharedPref.getCurrentCity();
 
@@ -39,15 +40,23 @@ class HomeController extends GetxController {
 
     var status = await LocationService.getPermissionStatus;
 
-    if (status != PermissionStatus.granted) return;
+    if (status != PermissionStatus.granted) {
+      isLoadingLocation = false;
+      update();
+      return;
+    }
 
     LocationData? location = await LocationService.getCurrentLocation();
-    if (location == null) return;
-
-    isLocationEnabled = true;
-    update();
-
-    if (location.latitude == null || location.longitude == null) return;
+    if (location == null) {
+      isLoadingLocation = false;
+      update();
+      return;
+    }
+    if (location.latitude == null || location.longitude == null) {
+      isLoadingLocation = false;
+      update();
+      return;
+    }
 
     latitude = location.latitude;
     longitude = location.longitude;
@@ -60,10 +69,15 @@ class HomeController extends GetxController {
     MySharedPref.setCurrentCity(city ?? City());
 
     if (currentLocalCity == null) {
+      isLocationEnabled = false;
+      isLoadingLocation = false;
     } else {
       currentCity = currentLocalCity.city;
       latitude = currentLocalCity.lat;
       longitude = currentLocalCity.lng;
+
+      isLocationEnabled = true;
+      isLoadingLocation = false;
     }
 
     update();

@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 class MyTheme {
   static ThemeData getThemeData({required bool isLight}) {
     return ThemeData(
-      fontFamily: GoogleFonts.merriweather().fontFamily,
+      fontFamily: GoogleFonts.dosis().fontFamily,
 
       useMaterial3: true,
       // main color (app bar,tabs..etc)
