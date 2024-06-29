@@ -369,7 +369,7 @@ class CurrentWeather extends StatelessWidget {
               Expanded(
                 child: GestureDetector(
                   onTap: () {
-                    Get.toNamed(Routes.LOCATIONS);
+                    // Get.toNamed(Routes.LOCATIONS);
                   },
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -385,23 +385,24 @@ class CurrentWeather extends StatelessWidget {
                           color: Colors.white,
                         ),
                       ),
-                      const Icon(
-                        Icons.arrow_drop_down,
-                        color: Colors.white,
-                        size: 25,
-                      ),
+                      // const Icon(
+                      //   Icons.arrow_drop_down,
+                      //   color: Colors.white,
+                      //   size: 25,
+                      // ),
                     ],
                   ),
                 ),
               ),
               const Gap(10),
-              IconButton(
-                onPressed: () {},
-                color: Colors.white,
-                icon: const Icon(Icons.settings),
-              ),
+              // IconButton(
+              //   onPressed: () {},
+              //   color: Colors.white,
+              //   icon: const Icon(Icons.settings),
+              // ),
             ],
           ),
+          const Gap(8),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -421,6 +422,7 @@ class CurrentWeather extends StatelessWidget {
                           style: Get.textTheme.displayLarge?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
+                            fontSize: 70,
                             fontFamily: temperatureFont,
                           ),
                         ),
@@ -576,14 +578,12 @@ class HourlyForecast extends StatelessWidget {
                           //   height: 50,
                           //   width: 50,
                           // ),
-                          FittedBox(
-                            child: SvgPicture.asset(
-                              WeatherUtils.getWeatherSvg(
-                                hourly.weather?.first.description,
-                                date: hourly.dt,
-                                sunrise: controller.currentWeather?.sunrise,
-                                sunset: controller.currentWeather?.sunset,
-                              ),
+                          SvgPicture.asset(
+                            WeatherUtils.getWeatherSvg(
+                              hourly.weather?.first.description,
+                              date: hourly.dt,
+                              sunrise: controller.currentWeather?.sunrise,
+                              sunset: controller.currentWeather?.sunset,
                             ),
                           ),
                           // Icon(
@@ -650,7 +650,7 @@ class DailyForecast extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            "7-days Forecast",
+            "Daily Forecast",
             style: Get.textTheme.bodyLarge?.copyWith(
               color: Colors.white,
             ),
@@ -672,55 +672,222 @@ class DailyForecast extends StatelessWidget {
             itemBuilder: (BuildContext context, int index) {
               Daily daily = controller.dailyForecast[index];
 
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Row(
                     children: [
-                      // SvgPicture.asset(
-                      //   WeatherUtils.getWeatherSvg(
-                      //     daily.weather?.first.description,
-                      //   ),
-                      //   height: 50,
-                      // ),
-                      Icon(
-                        WeatherUtils.getWeatherIcon(
-                          daily.weather?.first.description,
+                      Expanded(
+                        child: Text(
+                          DateTimeUtils.getDayOrDate(
+                            daily.dt?.fromTimeStampToDateTime() ??
+                                DateTime.now(),
+                          ),
+                          // DateFormat("EEEE, MMM dd").format(
+                          //   daily.dt?.fromTimeStampToDateTime() ?? DateTime.now(),
+                          // ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                          style: Get.textTheme.bodyLarge?.copyWith(
+                            color: Colors.white,
+                          ),
                         ),
-                        color: Colors.white,
-                        size: 25.sp,
                       ),
-                      const Gap(kSpacing),
                       Text(
-                        DateFormat(DateFormat.MONTH_DAY).format(
-                          daily.dt?.fromTimeStampToDateTime() ?? DateTime.now(),
-                        ),
+                        mainValues.reverseMap[daily.weather?.first.main]
+                                .toString()
+                                .capitalize ??
+                            "",
+                        // descriptionValues.reverseMap[
+                        //             daily.weather?.first.description]
+                        //         .toString()
+                        //         .capitalize ??
+                        //     "",
                         style: Get.textTheme.bodyLarge?.copyWith(
                           color: Colors.white,
                         ),
                       ),
+                      const Gap(20),
                     ],
                   ),
-                  const Gap(kSpacing),
-                  Text(
-                    mainValues.reverseMap[daily.weather?.first.main]
-                            .toString()
-                            .capitalize ??
-                        "",
-                    style: Get.textTheme.bodyLarge?.copyWith(
-                      color: Colors.white,
-                    ),
+                  const Gap(8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                          child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                flex: 3,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    RichText(
+                                      text: TextSpan(
+                                          text: "Humidity: ",
+                                          style: Get.textTheme.bodyMedium
+                                              ?.copyWith(
+                                            color: Colors.white,
+                                          ),
+                                          children: [
+                                            TextSpan(
+                                              text: "${daily.humidity}%",
+                                              style: Get.textTheme.bodyLarge
+                                                  ?.copyWith(
+                                                color: Colors.white,
+                                              ),
+                                            )
+                                          ]),
+                                    ),
+                                    const Gap(8),
+                                    RichText(
+                                      text: TextSpan(
+                                          text: "Wind: ",
+                                          style: Get.textTheme.bodyMedium
+                                              ?.copyWith(
+                                            color: Colors.white,
+                                          ),
+                                          children: [
+                                            TextSpan(
+                                              text:
+                                                  "${convertMsToKmh(daily.windSpeed ?? 0)} km/h ",
+                                              // "${WeatherUtils.getWindDirection(daily.windDeg ?? 0, fullName: true)}"
+                                              style: Get.textTheme.bodyLarge
+                                                  ?.copyWith(
+                                                color: Colors.white,
+                                              ),
+                                            )
+                                          ]),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const Gap(kSpacing),
+                              Expanded(
+                                flex: 2,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        const Icon(
+                                          WeatherIcons.cloudy,
+                                          size: 17,
+                                          color: Colors.white,
+                                        ),
+                                        const Gap(8),
+                                        Text(
+                                          "${daily.clouds}%",
+                                          style:
+                                              Get.textTheme.bodyLarge?.copyWith(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const Gap(12),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        const Icon(
+                                          WeatherIcons.thermometer,
+                                          size: 17,
+                                          color: Colors.white,
+                                        ),
+                                        const Gap(4),
+                                        Text(
+                                          // "${daily.temp?.eve?.toStringAsFixed(0) ?? 0}ºC",
+                                          "${daily.temp?.max?.toStringAsFixed(0) ?? 0}º"
+                                          "/"
+                                          "${daily.temp?.min?.toStringAsFixed(0) ?? 0}º",
+                                          style:
+                                              Get.textTheme.bodyLarge?.copyWith(
+                                            fontFamily: temperatureFont,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    // const Gap(10),
+                                    // RichText(
+                                    //   text: TextSpan(
+                                    //       text: "Average: ",
+                                    //       style: Get.textTheme.bodyMedium
+                                    //           ?.copyWith(
+                                    //         color: Colors.white,
+                                    //       ),
+                                    //       children: [
+                                    //         TextSpan(
+                                    //           text:
+                                    //               "${daily.feelsLike?.eve?.toStringAsFixed(0) ?? 0}ºC",
+                                    //           // "${WeatherUtils.getWindDirection(daily.windDeg ?? 0, fullName: true)}"
+                                    //           style: Get.textTheme.bodyLarge
+                                    //               ?.copyWith(
+                                    //             color: Colors.white,
+                                    //             fontFamily: temperatureFont,
+                                    //           ),
+                                    //         )
+                                    //       ]),
+                                    // ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      )),
+                      const Gap(kPadding),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            WeatherUtils.getWeatherSvg(
+                              daily.weather?.first.description,
+                            ),
+                            height: 70,
+                          ),
+                          // Text(
+                          //   mainValues.reverseMap[daily.weather?.first.main]
+                          //           .toString()
+                          //           .capitalize ??
+                          //       "",
+                          //   // descriptionValues.reverseMap[
+                          //   //             daily.weather?.first.description]
+                          //   //         .toString()
+                          //   //         .capitalize ??
+                          //   //     "",
+                          //   style: Get.textTheme.bodyLarge?.copyWith(
+                          //     color: Colors.white,
+                          //   ),
+                          // ),
+                          // Text(
+                          //   descriptionValues.reverseMap[
+                          //               daily.weather?.first.description]
+                          //           .toString()
+                          //           .capitalize ??
+                          //       "",
+                          //   style: Get.textTheme.bodyMedium?.copyWith(
+                          //     color: Colors.white,
+                          //   ),
+                          // ),
+                        ],
+                      ),
+                    ],
                   ),
-                  const Gap(kSpacing),
-                  Text(
-                    "${daily.temp?.max?.toStringAsFixed(0) ?? 0}º"
-                    "/"
-                    "${daily.temp?.min?.toStringAsFixed(0) ?? 0}º",
-                    style: Get.textTheme.bodyLarge?.copyWith(
-                      fontFamily: temperatureFont,
-                      color: Colors.white,
-                    ),
-                  ),
+                  // Text(
+                  //   daily.summary ?? "",
+                  //   style: Get.textTheme.bodyMedium?.copyWith(
+                  //     color: Colors.white,
+                  //   ),
+                  // ),
                 ],
               );
             },
@@ -789,17 +956,19 @@ class WeatherDetails extends StatelessWidget {
                   child: Column(
                     children: [
                       Icon(
-                        WeatherIcons.windy,
+                        WeatherIcons.thermometer,
                         size: 30,
                         color: Get.theme.cardColor,
                       ),
                       const Gap(8),
                       Text(
-                        "Wind",
+                        "UV",
                         style: Get.textTheme.bodyLarge,
                       ),
                       Text(
-                        "${convertMsToKmh(controller.currentWeather?.windSpeed ?? 0)} km/h",
+                        UVCalculator.getUVCalculator(
+                          controller.currentWeather?.uvi ?? 0,
+                        ),
                         style: Get.textTheme.bodyMedium,
                       ),
                     ],
@@ -858,19 +1027,18 @@ class WeatherDetails extends StatelessWidget {
                   child: Column(
                     children: [
                       Icon(
-                        WeatherIcons.thermometer,
+                        WeatherIcons.windy,
                         size: 30,
                         color: Get.theme.cardColor,
                       ),
                       const Gap(8),
                       Text(
-                        "UV",
+                        "Wind",
                         style: Get.textTheme.bodyLarge,
                       ),
                       Text(
-                        UVCalculator.getUVCalculator(
-                          controller.currentWeather?.uvi ?? 0,
-                        ),
+                        "${WeatherUtils.getWindDirection(controller.currentWeather?.windDeg ?? 0)} "
+                        "${convertMsToKmh(controller.currentWeather?.windSpeed ?? 0)} km/h",
                         style: Get.textTheme.bodyMedium,
                       ),
                     ],

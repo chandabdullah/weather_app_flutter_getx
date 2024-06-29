@@ -115,4 +115,103 @@ class WeatherUtils {
         return isNight ? WeatherType.sunnyNight : WeatherType.sunny;
     }
   }
+
+  static String getWindDirection(int degrees, {bool fullName = false}) {
+    if (degrees < 0 || degrees > 360) {
+      return 'Invalid';
+    }
+
+    const List<String> shortDirections = [
+      'N',
+      'NNE',
+      'NE',
+      'ENE',
+      'E',
+      'ESE',
+      'SE',
+      'SSE',
+      'S',
+      'SSW',
+      'SW',
+      'WSW',
+      'W',
+      'WNW',
+      'NW',
+      'NNW',
+      'N'
+    ];
+
+    const List<String> fullDirections = [
+      'North',
+      'North-Northeast',
+      'Northeast',
+      'East-Northeast',
+      'East',
+      'East-Southeast',
+      'Southeast',
+      'South-Southeast',
+      'South',
+      'South-Southwest',
+      'Southwest',
+      'West-Southwest',
+      'West',
+      'West-Northwest',
+      'Northwest',
+      'North-Northwest',
+      'North'
+    ];
+
+    int index = ((degrees + 11.25) / 22.5).floor() % 16;
+    return fullName ? fullDirections[index] : shortDirections[index];
+  }
+
+  static IconData getWindDirectionIcon(int degrees) {
+    String direction = getWindDirection(degrees);
+
+    switch (direction) {
+      case 'N':
+      case 'North':
+        return Icons.arrow_upward;
+      case 'NNE':
+      case 'North-Northeast':
+      case 'NE':
+      case 'Northeast':
+        return Icons.arrow_upward;
+      case 'ENE':
+      case 'East-Northeast':
+      case 'E':
+      case 'East':
+        return Icons.arrow_forward;
+      case 'ESE':
+      case 'East-Southeast':
+      case 'SE':
+      case 'Southeast':
+        return Icons.arrow_forward;
+      case 'SSE':
+      case 'South-Southeast':
+      case 'S':
+      case 'South':
+        return Icons.arrow_downward;
+      case 'SSW':
+      case 'South-Southwest':
+      case 'SW':
+      case 'Southwest':
+        return Icons.arrow_downward;
+      case 'WSW':
+      case 'West-Southwest':
+      case 'W':
+      case 'West':
+        return Icons.arrow_back;
+      case 'WNW':
+      case 'West-Northwest':
+      case 'NW':
+      case 'Northwest':
+        return Icons.arrow_back;
+      case 'NNW':
+      case 'North-Northwest':
+        return Icons.arrow_upward;
+      default:
+        return Icons.help;
+    }
+  }
 }
