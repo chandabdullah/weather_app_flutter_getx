@@ -27,6 +27,14 @@
 		<key>UILaunchStoryboardName</key>
 		<string>LaunchScreen</string>
 		<key>UIMainStoryboardFile</key>
+		
+		<string>NSLocationWhenInUseUsageDescription</string>
+		<key>We need location permission to get weather data of current location</key>
+		<string>NSLocationAlwaysUsageDescription</string>
+		<key>We need location permission to get weather data of current location</key>
+		<string>NSLocationAlwaysAndWhenInUseUsageDescription</string>
+		<key>We need location permission to get weather data of current location</key>
+
 		<string>Main</string>
 		<key>UISupportedInterfaceOrientations</key>
 		<array>

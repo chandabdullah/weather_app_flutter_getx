@@ -228,8 +228,9 @@ class Weather {
 
   factory Weather.fromJson(Map<String, dynamic> json) => Weather(
         id: json["id"],
-        main: mainValues.map[json["main"]]!,
-        description: descriptionValues.map[json["description"]]!,
+        main: mainValues.map[json["main"]] ?? Main.CLEAR,
+        description:
+            descriptionValues.map[json["description"]] ?? Description.CLEAR_SKY,
         icon: json["icon"],
       );
 
