@@ -1,30 +1,23 @@
 import 'dart:ui';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_weather_bg_null_safety/bg/weather_bg.dart';
 import 'package:gap/gap.dart';
 
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:sticky_headers/sticky_headers.dart';
-import 'package:weather_app/app/components/my_widgets_animator.dart';
-import 'package:weather_app/app/constants/app_constants.dart';
-import 'package:weather_app/app/models/weather_model.dart';
-import 'package:weather_app/app/routes/app_pages.dart';
-import 'package:weather_app/app/services/api_call_status.dart';
-import 'package:weather_app/config/theme/my_gradient.dart';
-import 'package:weather_app/utils/calculation.dart';
-import 'package:weather_app/utils/uv_calculator.dart';
-import 'package:weather_app/utils/weather_utils.dart';
+import '/app/components/my_widgets_animator.dart';
+import '/app/constants/app_constants.dart';
+import '/app/models/weather_model.dart';
+import '/app/services/api_call_status.dart';
+import '/config/theme/my_gradient.dart';
+import '/utils/calculation.dart';
+import '/utils/uv_calculator.dart';
+import '/utils/weather_utils.dart';
 import 'package:weather_icons/weather_icons.dart';
 import 'package:intl/intl.dart';
-import 'package:weather_app/utils/datetime_utils.dart';
+import '/utils/datetime_utils.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -262,48 +255,109 @@ class HomeView extends GetView<HomeController> {
                           ],
                         ),
                       )
-                    : SmartRefresher(
-                        controller: controller.smartRefreshController,
-                        onRefresh: () async {
-                          await controller.getWeatherInfo();
-                          controller.smartRefreshController.refreshCompleted();
-                        },
-                        child: MyWidgetsAnimator(
-                          apiCallStatus: controller.apiCallStatus,
-                          loadingWidget: () => const Center(
-                            child:
-                                CircularProgressIndicator(color: Colors.white),
-                          ),
-                          successWidget: () => SingleChildScrollView(
-                            padding: const EdgeInsets.all(kPadding),
+                    : !controller.isLocationEnabled
+                        ? Container(
+                            padding: const EdgeInsets.all(kPadding * 3),
+                            height: Get.height,
+                            width: Get.width,
                             child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                // * Current Weather
-                                CurrentWeather(controller: controller),
-                                const Gap(kSpacing),
-
-                                Column(
-                                  children: [
-                                    // * Hourly Forecast
-                                    HourlyForecast(controller: controller),
-                                    const Gap(kSpacing),
-
-                                    // * Daily Forecast
-                                    DailyForecast(controller: controller),
-                                    const Gap(kSpacing),
-
-                                    // * Weather Details
-                                    WeatherDetails(controller: controller),
-
-                                    // * Sunrise, Sunset
-                                    SunsetSunrise(controller: controller),
-                                  ],
-                                )
+                                const Icon(
+                                  Icons.location_off_rounded,
+                                  size: 50,
+                                  color: Colors.white,
+                                ),
+                                const Gap(20),
+                                Text(
+                                  "Location Disabled",
+                                  textAlign: TextAlign.center,
+                                  style: Get.textTheme.titleLarge?.copyWith(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const Gap(8),
+                                Text(
+                                  "Enable location permission to get weather detail for your area",
+                                  textAlign: TextAlign.center,
+                                  style: Get.textTheme.bodyMedium?.copyWith(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const Gap(20),
+                                TextButton(
+                                  style: ButtonStyle(
+                                    elevation: MaterialStateProperty.all(0),
+                                    overlayColor: MaterialStateProperty.all(
+                                      Colors.white.withOpacity(.2),
+                                    ),
+                                    backgroundColor: MaterialStateProperty.all(
+                                      Get.theme.primaryColor,
+                                    ),
+                                    padding: MaterialStateProperty.all(
+                                      const EdgeInsets.symmetric(
+                                        horizontal: kPadding,
+                                      ),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    controller.getLocationData();
+                                  },
+                                  child: Text(
+                                    "Enable Now",
+                                    style: Get.textTheme.titleMedium?.copyWith(
+                                      color: Colors.white,
+                                      // fontSize: 20,
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
+                          )
+                        : SmartRefresher(
+                            controller: controller.smartRefreshController,
+                            onRefresh: () async {
+                              await controller.getWeatherInfo();
+                              controller.smartRefreshController
+                                  .refreshCompleted();
+                            },
+                            child: MyWidgetsAnimator(
+                              apiCallStatus: controller.apiCallStatus,
+                              loadingWidget: () => const Center(
+                                child: CircularProgressIndicator(
+                                    color: Colors.white),
+                              ),
+                              successWidget: () => SingleChildScrollView(
+                                padding: const EdgeInsets.all(kPadding),
+                                child: Column(
+                                  children: [
+                                    // * Current Weather
+                                    CurrentWeather(controller: controller),
+                                    const Gap(kSpacing),
+
+                                    Column(
+                                      children: [
+                                        // * Hourly Forecast
+                                        HourlyForecast(controller: controller),
+                                        const Gap(kSpacing),
+
+                                        // * Daily Forecast
+                                        DailyForecast(controller: controller),
+                                        const Gap(kSpacing),
+
+                                        // * Weather Details
+                                        WeatherDetails(controller: controller),
+
+                                        // * Sunrise, Sunset
+                                        SunsetSunrise(controller: controller),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
               ),
             ),
           ],

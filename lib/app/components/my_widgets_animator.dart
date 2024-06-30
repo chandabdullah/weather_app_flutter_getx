@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:weather_app/app/components/custom_empty_widget.dart';
-import 'package:weather_app/app/constants/app_constants.dart';
+import '/app/components/custom_empty_widget.dart';
+import '/app/constants/app_constants.dart';
 
 import '../services/api_call_status.dart';
 

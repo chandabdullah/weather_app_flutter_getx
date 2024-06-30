@@ -1,6 +1,6 @@
 import 'package:geocoding/geocoding.dart' as geocoding;
 import 'package:location/location.dart';
-import 'package:weather_app/app/models/cities_countries_model.dart';
+import '/app/models/cities_countries_model.dart';
 
 class LocationService {
   LocationService._();

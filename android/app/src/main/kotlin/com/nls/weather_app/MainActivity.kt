@@ -1,4 +1,4 @@
-package com.nls.weather_app
+package com.nls.weatherapp
 
 import io.flutter.embedding.android.FlutterActivity
 

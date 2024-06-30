@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:weather_app/app/models/weather_model.dart';
-import 'package:weather_app/config/theme/light_theme_colors.dart';
+import '/app/models/weather_model.dart';
+import '/config/theme/light_theme_colors.dart';
 
 class MyGradient {
   static Gradient backgroundGradient(Description? description) {

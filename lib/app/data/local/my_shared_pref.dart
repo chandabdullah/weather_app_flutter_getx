@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 // import 'package:app/app/model/user_model.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:weather_app/app/models/cities_countries_model.dart';
-import 'package:weather_app/app/models/weather_model.dart';
+import '/app/models/cities_countries_model.dart';
+import '/app/models/weather_model.dart';
 // import 'package:app/app/model/user_model.dart';
 
 import '../../../config/translations/localization_service.dart';

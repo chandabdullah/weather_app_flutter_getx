@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 import 'package:get/get.dart';
-import 'package:weather_app/app/constants/app_constants.dart';
+import '/app/constants/app_constants.dart';
 import 'package:weather_icons/weather_icons.dart';
 
 import '../controllers/locations_controller.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_weather_bg_null_safety/utils/weather_type.dart';
-import 'package:weather_app/app/models/weather_model.dart';
-import 'package:weather_app/utils/datetime_utils.dart';
+import '/app/models/weather_model.dart';
+import '/utils/datetime_utils.dart';
 import 'package:weather_icons/weather_icons.dart';
 
 class WeatherUtils {

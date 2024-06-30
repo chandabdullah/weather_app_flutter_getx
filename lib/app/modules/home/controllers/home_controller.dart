@@ -3,14 +3,14 @@ import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:logger/logger.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:weather_app/app/constants/app_constants.dart';
-import 'package:weather_app/app/data/local/my_shared_pref.dart';
-import 'package:weather_app/app/environment/environment.dart';
-import 'package:weather_app/app/models/cities_countries_model.dart';
-import 'package:weather_app/app/models/weather_model.dart';
-import 'package:weather_app/app/services/api_call_status.dart';
-import 'package:weather_app/app/services/base_client.dart';
-import 'package:weather_app/app/services/location_service.dart';
+import '/app/constants/app_constants.dart';
+import '/app/data/local/my_shared_pref.dart';
+import '/app/environment/environment.dart';
+import '/app/models/cities_countries_model.dart';
+import '/app/models/weather_model.dart';
+import '/app/services/api_call_status.dart';
+import '/app/services/base_client.dart';
+import '/app/services/location_service.dart';
 
 class HomeController extends GetxController {
   ApiCallStatus apiCallStatus = ApiCallStatus.holding;
@@ -42,6 +42,7 @@ class HomeController extends GetxController {
 
     if (status != PermissionStatus.granted) {
       isLoadingLocation = false;
+      isLocationEnabled = false;
       update();
       return;
     }
@@ -49,11 +50,13 @@ class HomeController extends GetxController {
     LocationData? location = await LocationService.getCurrentLocation();
     if (location == null) {
       isLoadingLocation = false;
+      isLocationEnabled = false;
       update();
       return;
     }
     if (location.latitude == null || location.longitude == null) {
       isLoadingLocation = false;
+      isLocationEnabled = false;
       update();
       return;
     }
@@ -69,7 +72,7 @@ class HomeController extends GetxController {
     MySharedPref.setCurrentCity(city ?? City());
 
     if (currentLocalCity == null) {
-      isLocationEnabled = false;
+      isLocationEnabled = true;
       isLoadingLocation = false;
     } else {
       currentCity = currentLocalCity.city;
