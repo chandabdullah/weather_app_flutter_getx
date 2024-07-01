@@ -318,7 +318,8 @@ class HomeView extends GetView<HomeController> {
                         : SmartRefresher(
                             controller: controller.smartRefreshController,
                             onRefresh: () async {
-                              await controller.getWeatherInfo();
+                              // await controller.getWeatherInfo();
+                              await controller.getLocationData(true);
                               controller.smartRefreshController
                                   .refreshCompleted();
                             },
@@ -487,7 +488,7 @@ class CurrentWeather extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const Gap(10),
+                    // const Gap(10),
                     // if (controller.isLocationEnabled)
                     if (controller.currentWeather?.weather?.first.description !=
                         null)
@@ -497,7 +498,12 @@ class CurrentWeather extends StatelessWidget {
                       //     width: 100,
                       //   ),
                       // SvgPicture.asset(
-                      //   'assets/svg/static/day.svg',
+                      //   WeatherUtils.getWeatherSvg(
+                      //     controller.currentWeather?.weather?.first.description,
+                      //     date: controller.currentWeather?.dt,
+                      //     sunrise: controller.currentWeather?.sunrise,
+                      //     sunset: controller.currentWeather?.sunset,
+                      //   ),
                       //   height: 85,
                       // ),
                       Icon(
@@ -659,7 +665,7 @@ class HourlyForecast extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            ((hourly.clouds ?? 0) > 75 &&
+                            ((hourly.clouds ?? 0) > 50 &&
                                     (hourly.weather?.first.main == Main.CLOUDS))
                                 ? "${hourly.clouds}%"
                                 : "",

@@ -1,3 +1,5 @@
+import 'package:weather_app/app/services/permissions_service.dart';
+
 import '/app/data/local/my_shared_pref.dart';
 import '/config/theme/my_theme.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +19,9 @@ void main() async {
   // init shared preference
   await MySharedPref.init();
 
+  AppPermissions appPermissions =
+      await PermissionHandlerService.checkPermissionsForApplication();
+
   runApp(
     ScreenUtilInit(
       designSize: const Size(375, 812),
@@ -28,7 +33,7 @@ void main() async {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
           title: "Weather App",
-          initialRoute: AppPages.INITIAL,
+          initialRoute: PermissionHandlerService.initialPage(appPermissions),
           getPages: AppPages.routes,
           builder: (context, widget) {
             bool themeIsLight = MySharedPref.getThemeIsLight();

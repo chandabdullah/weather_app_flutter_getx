@@ -1,16 +1,20 @@
-# weather_app
 
-A new Flutter project.
+# Weather App
 
-## Getting Started
+## _Current location weather_
 
-This project is a starting point for a Flutter application.
+  
 
-A few resources to get you started if this is your first Flutter project:
+### Objective
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Get local weather details, forecasts, and sunrise/sunset info in one app
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+  
+
+<a  href="https://play.google.com/store/apps/details?id=com.nls.weatherapp"  target="_blank">
+
+<img  src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"  alt="Get it on Google Play"  width="200"  height="80"  />
+
+</a>
+
+## Preview

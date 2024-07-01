@@ -28,7 +28,7 @@ class HomeController extends GetxController {
   List<Current> hourlyForecast = [];
   List<Daily> dailyForecast = [];
 
-  getLocationData() async {
+  getLocationData([bool onRefresh = false]) async {
     isLoadingLocation = true;
     true;
 
@@ -63,10 +63,13 @@ class HomeController extends GetxController {
 
     latitude = location.latitude;
     longitude = location.longitude;
+    // latitude = 34.0144;
+    // longitude = 71.5675;
+    // TODO:
 
     City? city = await LocationService.getCityFromLatLng(
-      location.latitude ?? 0,
-      location.longitude ?? 0,
+      latitude ?? 0,
+      longitude ?? 0,
     );
     currentCity = city?.city;
     MySharedPref.setCurrentCity(city ?? City());
@@ -94,10 +97,11 @@ class HomeController extends GetxController {
       DateTime apiCallDate = updatedDate.add(apiCallAfter);
 
       Logger().i(
+        "onRefresh: $onRefresh - "
         "API will call on ${DateFormat('hh:mm').format(apiCallDate)} but now it's ${DateFormat('hh:mm').format(now)}",
       );
 
-      if (now.isAfter(apiCallDate)) {
+      if ((now.isAfter(apiCallDate) || onRefresh)) {
         getWeatherInfo();
       } else {
         var response = MySharedPref.getTodaysWeather();
