@@ -17,4 +17,22 @@ Get local weather details, forecasts, and sunrise/sunset info in one app
 
 </a>
 
-## Preview
+### Preview
+
+<html>
+    <div style="display: flex; flex-wrap: wrap;">
+      <img style="margin-right: 10px; margin-bottom: 10px;" src="https://github.com/chandabdullah/weather_app_flutter_getx/blob/f01408f11f7ba9e540242bfe08577536e5f00a67/assets/presentation/faisalabad.png" height="500" alt="faisalabad.png"/>
+      <img style="margin-right: 10px; margin-bottom: 10px;" src="https://github.com/chandabdullah/weather_app_flutter_getx/blob/f01408f11f7ba9e540242bfe08577536e5f00a67/assets/presentation/karachi.png" height="500" alt="karachi.png"/>
+      <img style="margin-right: 10px; margin-bottom: 10px;" src="https://github.com/chandabdullah/weather_app_flutter_getx/blob/f01408f11f7ba9e540242bfe08577536e5f00a67/assets/presentation/murree.png" height="500" alt="murree.png"/>
+      <img style="margin-right: 10px; margin-bottom: 10px;" src="https://github.com/chandabdullah/weather_app_flutter_getx/blob/f01408f11f7ba9e540242bfe08577536e5f00a67/assets/presentation/muzaffarabad.png" height="500" alt="muzaffarabad.png"/>
+      <img style="margin-right: 10px; margin-bottom: 10px;" src="https://github.com/chandabdullah/weather_app_flutter_getx/blob/f01408f11f7ba9e540242bfe08577536e5f00a67/assets/presentation/peshawar.png" height="500" alt="peshawar.png"/>
+      <img style="margin-right: 10px; margin-bottom: 10px;" src="https://github.com/chandabdullah/weather_app_flutter_getx/blob/f01408f11f7ba9e540242bfe08577536e5f00a67/assets/presentation/quetta.png" height="500" alt="quetta.png"/>
+    </div>
+</html>
+
+## License
+
+MIT
+
+**Free Software © 2024**
+Next Level Software | Abdullah
