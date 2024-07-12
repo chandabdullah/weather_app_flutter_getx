@@ -7,6 +7,7 @@ import 'package:gap/gap.dart';
 
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:weather_app/app/routes/app_pages.dart';
 import '/app/components/my_widgets_animator.dart';
 import '/app/constants/app_constants.dart';
 import '/app/models/weather_model.dart';
@@ -222,6 +223,8 @@ class HomeView extends GetView<HomeController> {
               weatherType: WeatherUtils.getWeatherTypeBg(
                 controller.currentWeather?.weather?.first.description,
                 // Description.BROKEN_CLOUDS,
+                rain: controller.currentWeather?.rain,
+                snow: controller.currentWeather?.snow,
                 date: controller.currentWeather?.dt,
                 sunrise: controller.currentWeather?.sunrise,
                 sunset: controller.currentWeather?.sunset,
@@ -450,11 +453,13 @@ class CurrentWeather extends StatelessWidget {
                 ),
               ),
               const Gap(10),
-              // IconButton(
-              //   onPressed: () {},
-              //   color: Colors.white,
-              //   icon: const Icon(Icons.settings),
-              // ),
+              IconButton(
+                onPressed: () {
+                  Get.toNamed(Routes.SETTINGS);
+                },
+                color: Colors.white,
+                icon: const Icon(Icons.settings),
+              ),
             ],
           ),
           const Gap(8),
@@ -993,11 +998,15 @@ class WeatherDetails extends StatelessWidget {
                       const Gap(8),
                       Text(
                         "Humidity",
-                        style: Get.textTheme.bodyLarge,
+                        style: Get.textTheme.bodyLarge?.copyWith(
+                          color: Colors.white,
+                        ),
                       ),
                       Text(
                         "${controller.currentWeather?.humidity ?? 0}%",
-                        style: Get.textTheme.bodyMedium,
+                        style: Get.textTheme.bodyMedium?.copyWith(
+                          color: Colors.white,
+                        ),
                       ),
                     ],
                   ),
@@ -1023,13 +1032,17 @@ class WeatherDetails extends StatelessWidget {
                       const Gap(8),
                       Text(
                         "UV",
-                        style: Get.textTheme.bodyLarge,
+                        style: Get.textTheme.bodyLarge?.copyWith(
+                          color: Colors.white,
+                        ),
                       ),
                       Text(
                         UVCalculator.getUVCalculator(
                           controller.currentWeather?.uvi ?? 0,
                         ),
-                        style: Get.textTheme.bodyMedium,
+                        style: Get.textTheme.bodyMedium?.copyWith(
+                          color: Colors.white,
+                        ),
                       ),
                     ],
                   ),
@@ -1055,11 +1068,15 @@ class WeatherDetails extends StatelessWidget {
                       const Gap(8),
                       Text(
                         "Visibility",
-                        style: Get.textTheme.bodyLarge,
+                        style: Get.textTheme.bodyLarge?.copyWith(
+                          color: Colors.white,
+                        ),
                       ),
                       Text(
                         "${((controller.currentWeather?.visibility ?? 0) / 1000).toStringAsFixed(0)} km",
-                        style: Get.textTheme.bodyMedium,
+                        style: Get.textTheme.bodyMedium?.copyWith(
+                          color: Colors.white,
+                        ),
                       ),
                     ],
                   ),
@@ -1094,12 +1111,16 @@ class WeatherDetails extends StatelessWidget {
                       const Gap(8),
                       Text(
                         "Wind",
-                        style: Get.textTheme.bodyLarge,
+                        style: Get.textTheme.bodyLarge?.copyWith(
+                          color: Colors.white,
+                        ),
                       ),
                       Text(
                         "${WeatherUtils.getWindDirection(controller.currentWeather?.windDeg ?? 0)} "
                         "${convertMsToKmh(controller.currentWeather?.windSpeed ?? 0)} km/h",
-                        style: Get.textTheme.bodyMedium,
+                        style: Get.textTheme.bodyMedium?.copyWith(
+                          color: Colors.white,
+                        ),
                       ),
                     ],
                   ),
@@ -1124,11 +1145,15 @@ class WeatherDetails extends StatelessWidget {
                       const Gap(8),
                       Text(
                         "Pressure",
-                        style: Get.textTheme.bodyLarge,
+                        style: Get.textTheme.bodyLarge?.copyWith(
+                          color: Colors.white,
+                        ),
                       ),
                       Text(
                         "${controller.currentWeather?.pressure ?? 0} hPa",
-                        style: Get.textTheme.bodyMedium,
+                        style: Get.textTheme.bodyMedium?.copyWith(
+                          color: Colors.white,
+                        ),
                       ),
                     ],
                   ),
@@ -1162,11 +1187,15 @@ class WeatherDetails extends StatelessWidget {
                       const Gap(8),
                       Text(
                         "Rain",
-                        style: Get.textTheme.bodyLarge,
+                        style: Get.textTheme.bodyLarge?.copyWith(
+                          color: Colors.white,
+                        ),
                       ),
                       Text(
                         "${controller.currentWeather?.rain?.the1H ?? 0} mm/h",
-                        style: Get.textTheme.bodyMedium,
+                        style: Get.textTheme.bodyMedium?.copyWith(
+                          color: Colors.white,
+                        ),
                       ),
                     ],
                   ),
@@ -1192,11 +1221,15 @@ class WeatherDetails extends StatelessWidget {
                       const Gap(8),
                       Text(
                         "Snow",
-                        style: Get.textTheme.bodyLarge,
+                        style: Get.textTheme.bodyLarge?.copyWith(
+                          color: Colors.white,
+                        ),
                       ),
                       Text(
                         "${controller.currentWeather?.snow?.the1H ?? 0} mm/h",
-                        style: Get.textTheme.bodyMedium,
+                        style: Get.textTheme.bodyMedium?.copyWith(
+                          color: Colors.white,
+                        ),
                       ),
                     ],
                   ),
@@ -1243,7 +1276,9 @@ class SunsetSunrise extends StatelessWidget {
                   const Gap(8),
                   Text(
                     "Sunrise",
-                    style: Get.textTheme.bodyLarge,
+                    style: Get.textTheme.bodyLarge?.copyWith(
+                      color: Colors.white,
+                    ),
                   ),
                   Text(
                     DateFormat(DateFormat.HOUR_MINUTE).format(
@@ -1251,7 +1286,9 @@ class SunsetSunrise extends StatelessWidget {
                               ?.fromTimeStampToDateTime() ??
                           DateTime.now(),
                     ),
-                    style: Get.textTheme.bodyMedium,
+                    style: Get.textTheme.bodyMedium?.copyWith(
+                      color: Colors.white,
+                    ),
                   ),
                 ],
               ),
@@ -1275,7 +1312,9 @@ class SunsetSunrise extends StatelessWidget {
                 const Gap(8),
                 Text(
                   "Sunset",
-                  style: Get.textTheme.bodyLarge,
+                  style: Get.textTheme.bodyLarge?.copyWith(
+                    color: Colors.white,
+                  ),
                 ),
                 Text(
                   DateFormat(DateFormat.HOUR_MINUTE).format(
@@ -1283,7 +1322,9 @@ class SunsetSunrise extends StatelessWidget {
                             ?.fromTimeStampToDateTime() ??
                         DateTime.now(),
                   ),
-                  style: Get.textTheme.bodyMedium,
+                  style: Get.textTheme.bodyMedium?.copyWith(
+                    color: Colors.white,
+                  ),
                 ),
               ],
             ),

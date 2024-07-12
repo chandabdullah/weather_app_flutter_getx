@@ -6,6 +6,7 @@ abstract class Routes {
   static const HOME = _Paths.HOME;
   static const LOCATIONS = _Paths.LOCATIONS;
   static const LOCATION_PERMISSION = _Paths.LOCATION_PERMISSION;
+  static const SETTINGS = _Paths.SETTINGS;
 }
 
 abstract class _Paths {
@@ -13,4 +14,5 @@ abstract class _Paths {
   static const HOME = '/home';
   static const LOCATIONS = '/locations';
   static const LOCATION_PERMISSION = '/location-permission';
+  static const SETTINGS = '/settings';
 }

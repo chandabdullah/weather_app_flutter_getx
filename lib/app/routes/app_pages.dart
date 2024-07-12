@@ -6,6 +6,8 @@ import '../modules/location_permission/bindings/location_permission_binding.dart
 import '../modules/location_permission/views/location_permission_view.dart';
 import '../modules/locations/bindings/locations_binding.dart';
 import '../modules/locations/views/locations_view.dart';
+import '../modules/settings/bindings/settings_binding.dart';
+import '../modules/settings/views/settings_view.dart';
 
 part 'app_routes.dart';
 
@@ -30,6 +32,11 @@ class AppPages {
       name: _Paths.LOCATION_PERMISSION,
       page: () => const LocationPermissionView(),
       binding: LocationPermissionBinding(),
+    ),
+    GetPage(
+      name: _Paths.SETTINGS,
+      page: () => const SettingsView(),
+      binding: SettingsBinding(),
     ),
   ];
 }

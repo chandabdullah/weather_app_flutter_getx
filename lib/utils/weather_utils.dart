@@ -89,12 +89,22 @@ class WeatherUtils {
 
   static WeatherType getWeatherTypeBg(
     Description? description, {
+    Rain? rain,
+    Rain? snow,
     int? date,
     int? sunrise,
     int? sunset,
   }) {
     bool isNight =
         DateTimeUtils.isNight(date: date, sunrise: sunrise, sunset: sunset);
+
+    if (snow?.the1H != null) {
+      return isNight ? WeatherType.heavySnow : WeatherType.heavySnow;
+    }
+
+    if (rain?.the1H != null) {
+      return isNight ? WeatherType.heavyRainy : WeatherType.heavyRainy;
+    }
 
     switch (description) {
       case Description.BROKEN_CLOUDS:
