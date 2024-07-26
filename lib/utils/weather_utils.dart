@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_weather_bg_null_safety/utils/weather_type.dart';
 import '/app/models/weather_model.dart';
@@ -85,6 +87,37 @@ class WeatherUtils {
             ? 'assets/svg/static/night.svg'
             : 'assets/svg/static/day.svg';
     }
+  }
+
+  static String getSmallTextFromDescription(Description? value) {
+    switch (value) {
+      case Description.BROKEN_CLOUDS:
+        return 'Clouds';
+      case Description.CLEAR_SKY:
+        return 'Clear Sky';
+      case Description.FEW_CLOUDS:
+        return 'Few Clouds';
+      case Description.LIGHT_RAIN:
+        return 'Light Rain';
+      case Description.MODERATE_RAIN:
+        return 'Rain';
+      case Description.OVERCAST_CLOUDS:
+        return 'Clouds';
+      case Description.SCATTERED_CLOUDS:
+        return 'Clouds';
+      default:
+        return 'assets/svg/static/night.svg';
+    }
+  }
+
+  static Description getRandomDescription() {
+    List<Description> descriptions = Description.values;
+
+    final random = Random();
+
+    int randomIndex = random.nextInt(descriptions.length);
+
+    return descriptions[randomIndex];
   }
 
   static WeatherType getWeatherTypeBg(

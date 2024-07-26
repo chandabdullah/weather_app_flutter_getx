@@ -1,8 +1,13 @@
 import 'dart:ui';
 
+import 'package:draggable_home/draggable_home.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_weather_bg_null_safety/bg/weather_bg.dart';
+import 'package:flutter_weather_bg_null_safety/utils/weather_type.dart';
 import 'package:gap/gap.dart';
 
 import 'package:get/get.dart';
@@ -19,6 +24,7 @@ import '/utils/weather_utils.dart';
 import 'package:weather_icons/weather_icons.dart';
 import 'package:intl/intl.dart';
 import '/utils/datetime_utils.dart';
+import 'package:glass/glass.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -29,345 +35,1210 @@ class HomeView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(builder: (_) {
       return Scaffold(
-        // appBar: AppBar(
-        //   // backgroundColor: Get.theme.primaryColor,
-        //   backgroundColor: MyGradient.getAppBarColor(
-        //     controller.currentWeather?.weather?.first.description,
-        //     // Description.FEW_CLOUDS,
-        //   ),
-        //   elevation: 0,
-        //   title: GestureDetector(
-        //     onTap: () {
-        //       Get.toNamed(Routes.LOCATIONS);
-        //     },
-        //     child: Row(
-        //       mainAxisSize: MainAxisSize.min,
-        //       children: [
-        //         const Icon(
-        //           Icons.location_on,
-        //           color: Colors.white,
-        //         ),
-        //         const Gap(10),
-        //         Text(
-        //           controller.currentCity ?? "",
-        //           style: const TextStyle(
-        //             color: Colors.white,
-        //           ),
-        //         ),
-        //         const Icon(
-        //           Icons.arrow_drop_down,
-        //           color: Colors.white,
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-        //   centerTitle: false,
-        //   actions: [
-        //     // Text(
-        //     //   DateFormat(DateFormat.ABBR_MONTH_DAY).format(DateTime.now()),
-        //     //   style: Get.textTheme.bodyLarge?.copyWith(
-        //     //     color: Colors.white,
-        //     //   ),
-        //     // ),
-        //     IconButton(
-        //       onPressed: () {},
-        //       icon: const Icon(Icons.settings),
-        //     ),
-        //     const Gap(10),
-        //   ],
-        //   bottom: PreferredSize(
-        //     preferredSize: const Size.fromHeight(80),
-        //     child: Row(
-        //       mainAxisAlignment: MainAxisAlignment.start,
-        //       children: [
-        //         Padding(
-        //           padding: const EdgeInsets.only(
-        //             left: kPadding,
-        //           ),
-        //           child: Row(
-        //             children: [
-        //               Row(
-        //                 crossAxisAlignment: CrossAxisAlignment.start,
-        //                 children: [
-        //                   Text(
-        //                     controller.apiCallStatus == ApiCallStatus.success
-        //                         ? "${controller.currentWeather?.temp?.toStringAsFixed(0)}"
-        //                         : "__",
-        //                     style: Get.textTheme.displayLarge?.copyWith(
-        //                       fontWeight: FontWeight.bold,
-        //                       color: Colors.white,
-        //                     ),
-        //                   ),
-        //                   const Icon(
-        //                     WeatherIcons.celsius,
-        //                     size: 40,
-        //                     color: Colors.white,
-        //                   ),
-        //                 ],
-        //               ),
-        //               const Gap(10),
-        //               // if (controller.isLocationEnabled)
-        //               if (controller
-        //                       .currentWeather?.weather?.first.description !=
-        //                   null)
-        //                 //   Image.network(
-        //                 //     'https://openweathermap.org/img/wn/${controller.currentWeather?.weather?.first.icon}@2x.png',
-        //                 //     height: 100,
-        //                 //     width: 100,
-        //                 //   ),
-        //                 // SvgPicture.asset(
-        //                 //   'assets/svg/static/day.svg',
-        //                 //   height: 85,
-        //                 // ),
-        //                 Icon(
-        //                   WeatherUtils.getWeatherIcon(
-        //                     controller
-        //                         .currentWeather?.weather?.first.description,
-        //                     date: controller.currentWeather?.dt,
-        //                     sunrise: controller.currentWeather?.sunrise,
-        //                     sunset: controller.currentWeather?.sunset,
-        //                   ),
-        //                   size: 50,
-        //                   color: Colors.white,
-        //                 ),
-        //             ],
-        //           ),
-        //         ),
-        //         const Spacer(),
-        //         if (controller.apiCallStatus == ApiCallStatus.success)
-        //           Column(
-        //             crossAxisAlignment: CrossAxisAlignment.end,
-        //             children: [
-        //               Text(
-        //                 DateFormat(DateFormat.ABBR_MONTH_DAY).format(
-        //                   controller.currentWeather?.dt
-        //                           ?.fromTimeStampToDateTime() ??
-        //                       DateTime.now(),
-        //                 ),
-        //                 style: Get.textTheme.titleLarge?.copyWith(
-        //                   color: Colors.white,
-        //                 ),
-        //               ),
-        //               const Gap(4),
-        //               if (controller.currentWeather?.weather?.first.main !=
-        //                   null)
-        //                 Text(
-        //                   descriptionValues.reverseMap[controller.currentWeather
-        //                               ?.weather?.first.description]
-        //                           .toString()
-        //                           .capitalize ??
-        //                       "",
-        //                   style: Get.textTheme.titleMedium?.copyWith(
-        //                     color: Colors.white,
-        //                   ),
-        //                 ),
-        //               Text(
-        //                 "Feel like ${controller.currentWeather?.feelsLike?.toStringAsFixed(0)}ºC",
-        //                 style: Get.textTheme.titleMedium?.copyWith(
-        //                   color: Colors.white,
-        //                 ),
-        //               ),
-        //               const Gap(5),
-        //             ],
-        //           ),
-        //         const Gap(kSpacing),
-        //       ],
-        //     ),
-        //   ),
-        // ),
+          // appBar: AppBar(
+          //   // backgroundColor: Get.theme.primaryColor,
+          //   backgroundColor: MyGradient.getAppBarColor(
+          //     controller.currentWeather?.weather?.first.description,
+          //     // Description.FEW_CLOUDS,
+          //   ),
+          //   elevation: 0,
+          //   title: GestureDetector(
+          //     onTap: () {
+          //       Get.toNamed(Routes.LOCATIONS);
+          //     },
+          //     child: Row(
+          //       mainAxisSize: MainAxisSize.min,
+          //       children: [
+          //         const Icon(
+          //           Icons.location_on,
+          //           color: Colors.white,
+          //         ),
+          //         const Gap(10),
+          //         Text(
+          //           controller.currentCity ?? "",
+          //           style: const TextStyle(
+          //             color: Colors.white,
+          //           ),
+          //         ),
+          //         const Icon(
+          //           Icons.arrow_drop_down,
+          //           color: Colors.white,
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          //   centerTitle: false,
+          //   actions: [
+          //     // Text(
+          //     //   DateFormat(DateFormat.ABBR_MONTH_DAY).format(DateTime.now()),
+          //     //   style: Get.textTheme.bodyLarge?.copyWith(
+          //     //     color: Colors.white,
+          //     //   ),
+          //     // ),
+          //     IconButton(
+          //       onPressed: () {},
+          //       icon: const Icon(Icons.settings),
+          //     ),
+          //     const Gap(10),
+          //   ],
+          //   bottom: PreferredSize(
+          //     preferredSize: const Size.fromHeight(80),
+          //     child: Row(
+          //       mainAxisAlignment: MainAxisAlignment.start,
+          //       children: [
+          //         Padding(
+          //           padding: const EdgeInsets.only(
+          //             left: kPadding,
+          //           ),
+          //           child: Row(
+          //             children: [
+          //               Row(
+          //                 crossAxisAlignment: CrossAxisAlignment.start,
+          //                 children: [
+          //                   Text(
+          //                     controller.apiCallStatus == ApiCallStatus.success
+          //                         ? "${controller.currentWeather?.temp?.toStringAsFixed(0)}"
+          //                         : "__",
+          //                     style: Get.textTheme.displayLarge?.copyWith(
+          //                       fontWeight: FontWeight.bold,
+          //                       color: Colors.white,
+          //                     ),
+          //                   ),
+          //                   const Icon(
+          //                     WeatherIcons.celsius,
+          //                     size: 40,
+          //                     color: Colors.white,
+          //                   ),
+          //                 ],
+          //               ),
+          //               const Gap(10),
+          //               // if (controller.isLocationEnabled)
+          //               if (controller
+          //                       .currentWeather?.weather?.first.description !=
+          //                   null)
+          //                 //   Image.network(
+          //                 //     'https://openweathermap.org/img/wn/${controller.currentWeather?.weather?.first.icon}@2x.png',
+          //                 //     height: 100,
+          //                 //     width: 100,
+          //                 //   ),
+          //                 // SvgPicture.asset(
+          //                 //   'assets/svg/static/day.svg',
+          //                 //   height: 85,
+          //                 // ),
+          //                 Icon(
+          //                   WeatherUtils.getWeatherIcon(
+          //                     controller
+          //                         .currentWeather?.weather?.first.description,
+          //                     date: controller.currentWeather?.dt,
+          //                     sunrise: controller.currentWeather?.sunrise,
+          //                     sunset: controller.currentWeather?.sunset,
+          //                   ),
+          //                   size: 50,
+          //                   color: Colors.white,
+          //                 ),
+          //             ],
+          //           ),
+          //         ),
+          //         const Spacer(),
+          //         if (controller.apiCallStatus == ApiCallStatus.success)
+          //           Column(
+          //             crossAxisAlignment: CrossAxisAlignment.end,
+          //             children: [
+          //               Text(
+          //                 DateFormat(DateFormat.ABBR_MONTH_DAY).format(
+          //                   controller.currentWeather?.dt
+          //                           ?.fromTimeStampToDateTime() ??
+          //                       DateTime.now(),
+          //                 ),
+          //                 style: Get.textTheme.titleLarge?.copyWith(
+          //                   color: Colors.white,
+          //                 ),
+          //               ),
+          //               const Gap(4),
+          //               if (controller.currentWeather?.weather?.first.main !=
+          //                   null)
+          //                 Text(
+          //                   descriptionValues.reverseMap[controller.currentWeather
+          //                               ?.weather?.first.description]
+          //                           .toString()
+          //                           .capitalize ??
+          //                       "",
+          //                   style: Get.textTheme.titleMedium?.copyWith(
+          //                     color: Colors.white,
+          //                   ),
+          //                 ),
+          //               Text(
+          //                 "Feel like ${controller.currentWeather?.feelsLike?.toStringAsFixed(0)}ºC",
+          //                 style: Get.textTheme.titleMedium?.copyWith(
+          //                   color: Colors.white,
+          //                 ),
+          //               ),
+          //               const Gap(5),
+          //             ],
+          //           ),
+          //         const Gap(kSpacing),
+          //       ],
+          //     ),
+          //   ),
+          // ),
 
-        // body: SafeArea(
-        //   child: Padding(
-        //     padding: const EdgeInsets.all(kPadding),
-        //     child: Column(
-        //       children: [
-        //         Stack(
-        //           children: [
-        //             WeatherBg(
-        //               width: Get.width,
-        //               height: 150,
-        //               weatherType: WeatherUtils.getWeatherTypeBg(
-        //                 controller.currentWeather?.weather?.first.description,
-        //                 // Description.BROKEN_CLOUDS,
-        //                 date: controller.currentWeather?.dt,
-        //                 sunrise: controller.currentWeather?.sunrise,
-        //                 sunset: controller.currentWeather?.sunset,
-        //               ),
-        //             ),
-        //             BackdropFilter(
-        //               filter: ImageFilter.blur(
-        //                 sigmaX: 5,
-        //                 sigmaY: 5,
-        //                 tileMode: TileMode.mirror,
-        //               ),
-        //               child: Container(
-        //                 decoration: BoxDecoration(
-        //                   color: Colors.black.withOpacity(.3),
-        //                   borderRadius: BorderRadius.circular(kBorderRadius),
-        //                 ),
-        //                 child: CurrentWeather(controller: controller),
-        //               ),
-        //             ),
-        //           ],
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-        // ),
-
-        body: Stack(
-          children: [
-            WeatherBg(
-              width: Get.width,
-              height: Get.height,
-              weatherType: WeatherUtils.getWeatherTypeBg(
-                controller.currentWeather?.weather?.first.description,
-                // Description.BROKEN_CLOUDS,
-                rain: controller.currentWeather?.rain,
-                snow: controller.currentWeather?.snow,
-                date: controller.currentWeather?.dt,
-                sunrise: controller.currentWeather?.sunrise,
-                sunset: controller.currentWeather?.sunset,
-              ),
+          body: Stack(
+        children: [
+          WeatherBg(
+            width: Get.width,
+            height: Get.height,
+            weatherType: WeatherUtils.getWeatherTypeBg(
+              WeatherUtils.getRandomDescription(),
             ),
-            BlurContainer(
-              controller: controller,
-              filter: ImageFilter.blur(
-                sigmaX: 5,
-                sigmaY: 5,
-              ),
-              child: SafeArea(
-                child: controller.isLoadingLocation
-                    ? SizedBox(
-                        width: Get.width,
-                        height: Get.height,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const CircularProgressIndicator(
+          ),
+          controller.isLoadingLocation
+              ? SizedBox(
+                  width: Get.width,
+                  height: Get.height,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const CircularProgressIndicator(
+                        color: Colors.white,
+                      ),
+                      const Gap(kSpacing),
+                      Text(
+                        "Getting info...",
+                        style: Get.textTheme.bodyLarge?.copyWith(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : !controller.isInternetConnected
+                  ? SizedBox(
+                      width: Get.width,
+                      height: Get.height,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.wifi_off_rounded,
+                            size: 50,
+                            color: Colors.white,
+                          ),
+                          const Gap(kSpacing),
+                          Text(
+                            "No Internet Connection!",
+                            style: Get.textTheme.bodyLarge?.copyWith(
                               color: Colors.white,
                             ),
-                            const Gap(kSpacing),
-                            Text(
-                              "Getting info...",
-                              style: Get.textTheme.bodyLarge?.copyWith(
+                          ),
+                          const Gap(20),
+                          TextButton(
+                            style: ButtonStyle(
+                              elevation: MaterialStateProperty.all(0),
+                              overlayColor: MaterialStateProperty.all(
+                                Colors.white.withOpacity(.2),
+                              ),
+                              backgroundColor: MaterialStateProperty.all(
+                                Get.theme.primaryColor,
+                              ),
+                              padding: MaterialStateProperty.all(
+                                const EdgeInsets.symmetric(
+                                  horizontal: kPadding,
+                                ),
+                              ),
+                            ),
+                            onPressed: () {
+                              controller.onReady();
+                            },
+                            child: Text(
+                              "Enable Now",
+                              style: Get.textTheme.titleMedium?.copyWith(
                                 color: Colors.white,
+                                // fontSize: 20,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : !controller.isLocationEnabled
+                      ? Container(
+                          padding: const EdgeInsets.all(kPadding * 3),
+                          height: Get.height,
+                          width: Get.width,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.location_off_rounded,
+                                size: 50,
+                                color: Colors.white,
+                              ),
+                              const Gap(20),
+                              Text(
+                                "Location Disabled",
+                                textAlign: TextAlign.center,
+                                style: Get.textTheme.titleLarge?.copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const Gap(8),
+                              Text(
+                                "Enable location permission to get weather detail for your area",
+                                textAlign: TextAlign.center,
+                                style: Get.textTheme.bodyMedium?.copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const Gap(20),
+                              TextButton(
+                                style: ButtonStyle(
+                                  elevation: MaterialStateProperty.all(0),
+                                  overlayColor: MaterialStateProperty.all(
+                                    Colors.white.withOpacity(.2),
+                                  ),
+                                  backgroundColor: MaterialStateProperty.all(
+                                    Get.theme.primaryColor,
+                                  ),
+                                  padding: MaterialStateProperty.all(
+                                    const EdgeInsets.symmetric(
+                                      horizontal: kPadding,
+                                    ),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  controller.getLocationData();
+                                },
+                                child: Text(
+                                  "Enable Now",
+                                  style: Get.textTheme.titleMedium?.copyWith(
+                                    color: Colors.white,
+                                    // fontSize: 20,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : MyWidgetsAnimator(
+                          apiCallStatus: controller.apiCallStatus,
+                          // loadingWidget: () => Stack(
+                          //   children: [
+                          //     WeatherBg(
+                          //       width: Get.width,
+                          //       height: Get.height,
+                          //       weatherType: WeatherUtils.getWeatherTypeBg(
+                          //         Description.CLEAR_SKY,
+                          //       ),
+                          //     ),
+                          //     Center(),
+                          //   ],
+                          // ),
+                          successWidget: () => SuccessBody(
+                            controller: controller,
+                          ),
+                        ),
+        ],
+      )
+
+          // body: Stack(
+          //   children: [
+          //     WeatherBg(
+          //       width: Get.width,
+          //       height: Get.height,
+          //       weatherType: WeatherUtils.getWeatherTypeBg(
+          //         controller.currentWeather?.weather?.first.description,
+          //         // Description.CLEAR_SKY,
+          //         rain: controller.currentWeather?.rain,
+          //         snow: controller.currentWeather?.snow,
+          //         date: controller.currentWeather?.dt,
+          //         sunrise: controller.currentWeather?.sunrise,
+          //         sunset: controller.currentWeather?.sunset,
+          //       ),
+          //     ),
+          //     SizedBox(
+          //       // controller: controller,
+          //       // filter: ImageFilter.blur(
+          //       //   sigmaX: 5,
+          //       //   sigmaY: 5,
+          //       // ),
+          //       child: SafeArea(
+          //         child: controller.isLoadingLocation
+          //             ? SizedBox(
+          //                 width: Get.width,
+          //                 height: Get.height,
+          //                 child: Column(
+          //                   crossAxisAlignment: CrossAxisAlignment.center,
+          //                   mainAxisAlignment: MainAxisAlignment.center,
+          //                   children: [
+          //                     const CircularProgressIndicator(
+          //                       color: Colors.white,
+          //                     ),
+          //                     const Gap(kSpacing),
+          //                     Text(
+          //                       "Getting info...",
+          //                       style: Get.textTheme.bodyLarge?.copyWith(
+          //                         color: Colors.white,
+          //                       ),
+          //                     ),
+          //                   ],
+          //                 ),
+          //               )
+          //             : !controller.isLocationEnabled
+          //                 ? Container(
+          //                     padding: const EdgeInsets.all(kPadding * 3),
+          //                     height: Get.height,
+          //                     width: Get.width,
+          //                     child: Column(
+          //                       mainAxisAlignment: MainAxisAlignment.center,
+          //                       crossAxisAlignment: CrossAxisAlignment.center,
+          //                       children: [
+          //                         const Icon(
+          //                           Icons.location_off_rounded,
+          //                           size: 50,
+          //                           color: Colors.white,
+          //                         ),
+          //                         const Gap(20),
+          //                         Text(
+          //                           "Location Disabled",
+          //                           textAlign: TextAlign.center,
+          //                           style: Get.textTheme.titleLarge?.copyWith(
+          //                             color: Colors.white,
+          //                           ),
+          //                         ),
+          //                         const Gap(8),
+          //                         Text(
+          //                           "Enable location permission to get weather detail for your area",
+          //                           textAlign: TextAlign.center,
+          //                           style: Get.textTheme.bodyMedium?.copyWith(
+          //                             color: Colors.white,
+          //                           ),
+          //                         ),
+          //                         const Gap(20),
+          //                         TextButton(
+          //                           style: ButtonStyle(
+          //                             elevation: MaterialStateProperty.all(0),
+          //                             overlayColor: MaterialStateProperty.all(
+          //                               Colors.white.withOpacity(.2),
+          //                             ),
+          //                             backgroundColor: MaterialStateProperty.all(
+          //                               Get.theme.primaryColor,
+          //                             ),
+          //                             padding: MaterialStateProperty.all(
+          //                               const EdgeInsets.symmetric(
+          //                                 horizontal: kPadding,
+          //                               ),
+          //                             ),
+          //                           ),
+          //                           onPressed: () {
+          //                             controller.getLocationData();
+          //                           },
+          //                           child: Text(
+          //                             "Enable Now",
+          //                             style: Get.textTheme.titleMedium?.copyWith(
+          //                               color: Colors.white,
+          //                               // fontSize: 20,
+          //                             ),
+          //                           ),
+          //                         ),
+          //                       ],
+          //                     ),
+          //                   )
+          //                 : SmartRefresher(
+          //                     controller: controller.smartRefreshController,
+          //                     onRefresh: () async {
+          //                       // await controller.getWeatherInfo();
+          //                       await controller.getLocationData(true);
+          //                       controller.smartRefreshController
+          //                           .refreshCompleted();
+          //                     },
+          //                     child: MyWidgetsAnimator(
+          //                       apiCallStatus: controller.apiCallStatus,
+          //                       loadingWidget: () => const Center(
+          //                         child: CircularProgressIndicator(
+          //                             color: Colors.white),
+          //                       ),
+          //                       successWidget: () =>
+          //                           SuccessBody(controller: controller),
+          //                     ),
+          //                   ),
+          //       ),
+          //     ),
+          //   ],
+          // ),
+          );
+    });
+  }
+}
+
+//? Design 1
+// class SuccessBody extends StatelessWidget {
+//   const SuccessBody({
+//     super.key,
+//     required this.controller,
+//   });
+
+//   final HomeController controller;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return SingleChildScrollView(
+//       padding: const EdgeInsets.all(kPadding),
+//       child: Column(
+//         children: [
+//           // * Current Weather
+//           CurrentWeather(controller: controller),
+//           const Gap(kSpacing),
+//           Column(
+//             children: [
+//               // * Hourly Forecast
+//               HourlyForecast(controller: controller),
+//               const Gap(kSpacing),
+//               // * Daily Forecast
+//               DailyForecast(controller: controller),
+//               const Gap(kSpacing),
+//               // * Weather Details
+//               WeatherDetails(controller: controller),
+//               // * Sunrise, Sunset
+//               SunsetSunrise(controller: controller),
+//             ],
+//           )
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+//? Design 2
+// class SuccessBody extends StatelessWidget {
+//   const SuccessBody({
+//     super.key,
+//     required this.controller,
+//   });
+
+//   final HomeController controller;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return SingleChildScrollView(
+//       padding: const EdgeInsets.all(kPadding),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.stretch,
+//         children: [
+//           Padding(
+//             padding: const EdgeInsets.all(kPadding),
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.stretch,
+//               children: [
+//                 Row(
+//                   children: [
+//                     const Icon(
+//                       Icons.location_on_rounded,
+//                       color: Colors.white,
+//                     ),
+//                     const Gap(10),
+//                     Text(
+//                       "${controller.currentCity}",
+//                       style: Get.textTheme.titleLarge?.copyWith(
+//                         color: Colors.white,
+//                         fontWeight: FontWeight.normal,
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//                 const Gap(10),
+//                 Text(
+//                   "Today, ${DateFormat("MMM dd").format(DateTime.now().toLocal())}",
+//                   style: Get.textTheme.titleSmall?.copyWith(
+//                     color: Colors.white,
+//                     fontWeight: FontWeight.normal,
+//                   ),
+//                 ),
+//                 // const Gap(20),
+//                 Row(
+//                   crossAxisAlignment: CrossAxisAlignment.center,
+//                   children: [
+//                     Expanded(
+//                       child: Row(
+//                         crossAxisAlignment: CrossAxisAlignment.start,
+//                         children: [
+//                           Expanded(
+//                             child: FittedBox(
+//                               child: Text(
+//                                 controller.apiCallStatus ==
+//                                         ApiCallStatus.success
+//                                     ? "${controller.currentWeather?.temp?.toStringAsFixed(0)}"
+//                                     : "__",
+//                                 style: Get.textTheme.headlineLarge?.copyWith(
+//                                   fontWeight: FontWeight.bold,
+//                                   color: Colors.white,
+//                                   fontSize: 70.sp,
+//                                   fontFamily: temperatureFont,
+//                                 ),
+//                               ),
+//                             ),
+//                           ),
+//                           Padding(
+//                             padding: const EdgeInsets.symmetric(
+//                               vertical: 10,
+//                             ),
+//                             child: Text(
+//                               "ºC",
+//                               style: Get.textTheme.headlineLarge?.copyWith(
+//                                 fontWeight: FontWeight.bold,
+//                                 color: Colors.white,
+//                                 fontFamily: temperatureFont,
+//                               ),
+//                             ),
+//                             // child: Icon(
+//                             //   WeatherIcons.celsius,
+//                             //   size: 40,
+//                             //   color: Colors.white,
+//                             // ),
+//                           ),
+//                         ],
+//                       ),
+//                     ),
+//                     const Gap(10),
+//                     Expanded(
+//                       child: Column(
+//                         crossAxisAlignment: CrossAxisAlignment.stretch,
+//                         mainAxisAlignment: MainAxisAlignment.center,
+//                         children: [
+//                           Text(
+//                             "H ${controller.dailyForecast.first.temp?.max?.toStringAsFixed(0) ?? 0}ºC",
+//                             style: Get.textTheme.bodyMedium?.copyWith(
+//                               fontWeight: FontWeight.bold,
+//                               color: Colors.white,
+//                               fontFamily: temperatureFont,
+//                             ),
+//                           ),
+//                           const Gap(5),
+//                           Text(
+//                             "L ${controller.dailyForecast.first.temp?.min?.toStringAsFixed(0) ?? 0}ºC",
+//                             style: Get.textTheme.bodyMedium?.copyWith(
+//                               fontWeight: FontWeight.bold,
+//                               color: Colors.white,
+//                               fontFamily: temperatureFont,
+//                             ),
+//                           ),
+//                         ],
+//                       ),
+//                     ),
+//                     const Gap(10),
+//                   ],
+//                 ),
+//                 // const Gap(20),
+//                 RichText(
+//                   text: TextSpan(
+//                     text:
+//                         "${descriptionValues.reverseMap[controller.currentWeather?.weather?.first.description].toString().capitalize} ",
+//                     style: Get.textTheme.bodyLarge?.copyWith(
+//                       color: Colors.white,
+//                     ),
+//                     children: [
+//                       TextSpan(
+//                         text: "Feel Like ",
+//                         style: Get.textTheme.bodyMedium?.copyWith(
+//                           color: Colors.white,
+//                         ),
+//                       ),
+//                       TextSpan(
+//                         text: "${controller.currentWeather?.feelsLike ?? 0}ºC",
+//                         style: Get.textTheme.bodyMedium?.copyWith(
+//                           color: Colors.white,
+//                           fontFamily: temperatureFont,
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//           Container(
+//             color: Get.theme.cardColor.withOpacity(.5),
+//             padding: const EdgeInsets.all(kPadding),
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 Text(
+//                   "Hourly Forecast ${controller.hourlyForecast.length}",
+//                   style: Get.textTheme.bodyMedium,
+//                 ),
+//                 const Gap(15),
+//                 SizedBox(
+//                   height: 100,
+//                   child: ListView.separated(
+//                     scrollDirection: Axis.horizontal,
+//                     itemCount: controller.hourlyForecast.length,
+//                     separatorBuilder: (BuildContext context, int index) {
+//                       return const Gap(10);
+//                     },
+//                     itemBuilder: (BuildContext context, int index) {
+//                       var hourly = controller.hourlyForecast[index];
+//                       return Column(
+//                         children: [
+//                           Expanded(
+//                             child: Container(
+//                               decoration: BoxDecoration(
+//                                 color: Get.theme.splashColor,
+//                                 shape: BoxShape.circle,
+//                               ),
+//                               child: SvgPicture.asset(
+//                                 WeatherUtils.getWeatherSvg(
+//                                   hourly.weather?.first.description,
+//                                   date: hourly.dt,
+//                                   sunrise: controller.currentWeather?.sunrise,
+//                                   sunset: controller.currentWeather?.sunset,
+//                                 ),
+//                               ),
+//                             ),
+//                           ),
+//                           const Gap(7),
+//                           Text(
+//                             DateFormat(DateFormat.HOUR_MINUTE).format(
+//                               hourly.dt?.fromTimeStampToDateTime() ??
+//                                   DateTime.now(),
+//                             ),
+//                             style: Get.textTheme.bodySmall,
+//                           ),
+//                           const Gap(5),
+//                           Text(
+//                             "${hourly.temp?.toStringAsFixed(0) ?? 0}ºC",
+//                             style: Get.textTheme.bodyLarge?.copyWith(
+//                               fontWeight: FontWeight.bold,
+//                               fontFamily: temperatureFont,
+//                             ),
+//                           ),
+//                         ],
+//                       );
+//                     },
+//                   ),
+//                 )
+//               ],
+//             ),
+//           ),
+//         ],
+//       ).asGlass(
+//         blurX: 15,
+//         blurY: 15,
+//         enabled: true,
+//         frosted: true,
+//         tileMode: TileMode.mirror,
+//         tintColor: Colors.transparent,
+//         // tintColor: Get.theme.primaryColor,
+//         clipBorderRadius: BorderRadius.circular(kBorderRadius),
+//       ),
+//     );
+//   }
+// }
+
+//? Design 3
+class SuccessBody extends StatelessWidget {
+  const SuccessBody({
+    super.key,
+    required this.controller,
+  });
+
+  final HomeController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return DraggableHome(
+      physics: const ScrollPhysics(),
+      centerTitle: false,
+      // leading: const Icon(
+      //   Icons.location_on_rounded,
+      //   color: Colors.white,
+      // ),
+      title: Row(
+        children: [
+          const Icon(
+            Icons.location_on_rounded,
+            color: Colors.white,
+          ),
+          const Gap(10),
+          RichText(
+            text: TextSpan(
+              text: "${controller.currentCity}"
+                  " - ",
+              style: Get.textTheme.bodyLarge?.copyWith(
+                // fontFamily: temperatureFont,
+                color: Get.theme.appBarTheme.foregroundColor,
+              ),
+              children: [
+                TextSpan(
+                  text: "${controller.currentWeather?.temp?.toStringAsFixed(0)}"
+                      "ºC",
+                  style: Get.textTheme.bodyLarge?.copyWith(
+                    color: Get.theme.appBarTheme.foregroundColor,
+                    fontFamily: temperatureFont,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      headerWidget: Stack(
+        children: [
+          WeatherBg(
+            weatherType: WeatherUtils.getWeatherTypeBg(
+              controller.currentWeather?.weather?.first.description,
+              // Description.CLEAR_SKY,
+              rain: controller.currentWeather?.rain,
+              snow: controller.currentWeather?.snow,
+              date: controller.currentWeather?.dt,
+              sunrise: controller.currentWeather?.sunrise,
+              sunset: controller.currentWeather?.sunset,
+            ),
+            height: double.maxFinite,
+            width: Get.width,
+          ),
+          BlurContainer(
+            controller: controller,
+            filter: ImageFilter.blur(),
+            child: SafeArea(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(kPadding),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.location_on_rounded,
+                              color: Colors.white,
+                            ),
+                            const Gap(10),
+                            Text(
+                              "${controller.currentCity}",
+                              style: Get.textTheme.titleLarge?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.normal,
                               ),
                             ),
                           ],
                         ),
-                      )
-                    : !controller.isLocationEnabled
-                        ? Container(
-                            padding: const EdgeInsets.all(kPadding * 3),
-                            height: Get.height,
-                            width: Get.width,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.location_off_rounded,
-                                  size: 50,
-                                  color: Colors.white,
-                                ),
-                                const Gap(20),
-                                Text(
-                                  "Location Disabled",
-                                  textAlign: TextAlign.center,
-                                  style: Get.textTheme.titleLarge?.copyWith(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                const Gap(8),
-                                Text(
-                                  "Enable location permission to get weather detail for your area",
-                                  textAlign: TextAlign.center,
-                                  style: Get.textTheme.bodyMedium?.copyWith(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                const Gap(20),
-                                TextButton(
-                                  style: ButtonStyle(
-                                    elevation: MaterialStateProperty.all(0),
-                                    overlayColor: MaterialStateProperty.all(
-                                      Colors.white.withOpacity(.2),
-                                    ),
-                                    backgroundColor: MaterialStateProperty.all(
-                                      Get.theme.primaryColor,
-                                    ),
-                                    padding: MaterialStateProperty.all(
-                                      const EdgeInsets.symmetric(
-                                        horizontal: kPadding,
+                        const Gap(10),
+                        Text(
+                          "Today, ${DateFormat("MMM dd").format(DateTime.now().toLocal())}",
+                          style: Get.textTheme.titleMedium?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                        // const Gap(20),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: FittedBox(
+                                      child: Text(
+                                        controller.apiCallStatus ==
+                                                ApiCallStatus.success
+                                            ? "${controller.currentWeather?.temp?.toStringAsFixed(0)}"
+                                            : "__",
+                                        style: Get.textTheme.headlineLarge
+                                            ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                          fontSize: 70.sp,
+                                          fontFamily: temperatureFont,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                  onPressed: () {
-                                    controller.getLocationData();
-                                  },
-                                  child: Text(
-                                    "Enable Now",
-                                    style: Get.textTheme.titleMedium?.copyWith(
-                                      color: Colors.white,
-                                      // fontSize: 20,
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 10,
                                     ),
+                                    child: Text(
+                                      "ºC",
+                                      style:
+                                          Get.textTheme.headlineLarge?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                        fontFamily: temperatureFont,
+                                      ),
+                                    ),
+                                    // child: Icon(
+                                    //   WeatherIcons.celsius,
+                                    //   size: 40,
+                                    //   color: Colors.white,
+                                    // ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Gap(10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "H ${controller.dailyForecast.first.temp?.max?.toStringAsFixed(0) ?? 0}ºC",
+                                    style: Get.textTheme.bodyMedium?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      fontFamily: temperatureFont,
+                                    ),
+                                  ),
+                                  const Gap(5),
+                                  Text(
+                                    "L ${controller.dailyForecast.first.temp?.min?.toStringAsFixed(0) ?? 0}ºC",
+                                    style: Get.textTheme.bodyMedium?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      fontFamily: temperatureFont,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Gap(10),
+                          ],
+                        ),
+                        // const Gap(20),
+                        RichText(
+                          text: TextSpan(
+                            text:
+                                "${descriptionValues.reverseMap[controller.currentWeather?.weather?.first.description].toString().capitalize} ",
+                            style: Get.textTheme.bodyLarge?.copyWith(
+                              color: Colors.white,
+                            ),
+                            children: [
+                              TextSpan(
+                                text: "Feel Like ",
+                                style: Get.textTheme.bodyMedium?.copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              TextSpan(
+                                text:
+                                    "${controller.currentWeather?.feelsLike ?? 0}ºC",
+                                style: Get.textTheme.bodyMedium?.copyWith(
+                                  color: Colors.white,
+                                  fontFamily: temperatureFont,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+      body: [
+        Padding(
+          padding: const EdgeInsets.all(kPadding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Hourly Forecast",
+                style: Get.textTheme.bodyLarge,
+              ),
+              const Gap(10),
+              SizedBox(
+                height: 120,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: controller.hourlyForecast.length,
+                  separatorBuilder: (BuildContext context, int index) {
+                    return const Gap(10);
+                  },
+                  itemBuilder: (BuildContext context, int index) {
+                    var hourly = controller.hourlyForecast[index];
+                    return Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Get.theme.splashColor.withOpacity(.15),
+                        border: Border.all(
+                          color: Get.theme.splashColor.withOpacity(.5),
+                        ),
+                        borderRadius: BorderRadius.circular(kBorderRadius),
+                        // shape: BoxShape.circle,
+                      ),
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: SvgPicture.asset(
+                              WeatherUtils.getWeatherSvg(
+                                hourly.weather?.first.description,
+                                date: hourly.dt,
+                                sunrise: controller.currentWeather?.sunrise,
+                                sunset: controller.currentWeather?.sunset,
+                              ),
+                            ),
+                          ),
+                          const Gap(7),
+                          Text(
+                            DateFormat(DateFormat.HOUR_MINUTE).format(
+                              hourly.dt?.fromTimeStampToDateTime() ??
+                                  DateTime.now(),
+                            ),
+                            style: Get.textTheme.bodySmall,
+                          ),
+                          const Gap(5),
+                          Text(
+                            "${hourly.temp?.toStringAsFixed(0) ?? 0}ºC",
+                            style: Get.textTheme.bodyLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontFamily: temperatureFont,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const Gap(20),
+              Text(
+                "Daily Forecast",
+                style: Get.textTheme.bodyLarge,
+              ),
+              const Gap(10),
+              ListView.separated(
+                shrinkWrap: true,
+                padding: const EdgeInsets.all(0),
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: controller.dailyForecast.length,
+                separatorBuilder: (BuildContext context, int index) {
+                  return const Gap(10);
+                },
+                itemBuilder: (BuildContext context, int index) {
+                  var daily = controller.dailyForecast[index];
+                  return Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Get.theme.splashColor.withOpacity(.15),
+                      border: Border.all(
+                        color: Get.theme.splashColor.withOpacity(.5),
+                      ),
+                      borderRadius: BorderRadius.circular(kBorderRadius),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 5,
+                          child: Text(
+                            DateTimeUtils.getDayOrDate(
+                              daily.dt?.fromTimeStampToDateTime() ??
+                                  DateTime.now(),
+                            ),
+                            // DateFormat("EEEE, MMM dd").format(
+                            //   daily.dt?.fromTimeStampToDateTime() ?? DateTime.now(),
+                            // ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            style: Get.textTheme.bodyLarge,
+                          ),
+                        ),
+                        Expanded(
+                          flex: 7,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              SvgPicture.asset(
+                                WeatherUtils.getWeatherSvg(
+                                  daily.weather?.first.description,
+                                ),
+                                height: 50,
+                              ),
+                              Expanded(
+                                child: Text(
+                                  // WeatherUtils.getSmallTextFromDescription(
+                                  //   daily.weather?.first.description,
+                                  // ),
+                                  descriptionValues.reverseMap[
+                                              daily.weather?.first.description]
+                                          .toString()
+                                          .capitalize ??
+                                      "",
+                                  style: Get.textTheme.bodyMedium,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Gap(5),
+                        Expanded(
+                          flex: 3,
+                          child: RichText(
+                            // "${daily.temp?.eve?.toStringAsFixed(0) ?? 0}ºC",
+                            textAlign: TextAlign.right,
+                            text: TextSpan(
+                              text:
+                                  "${daily.temp?.max?.toStringAsFixed(0) ?? 0}º ",
+                              style: Get.textTheme.bodySmall?.copyWith(
+                                fontFamily: temperatureFont,
+                                color: Get.textTheme.bodyLarge?.color,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text:
+                                      " ${daily.temp?.min?.toStringAsFixed(0) ?? 0}º",
+                                  style: Get.textTheme.bodySmall?.copyWith(
+                                    fontFamily: temperatureFont,
+                                    color: Get.textTheme.bodySmall?.color,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ],
                             ),
-                          )
-                        : SmartRefresher(
-                            controller: controller.smartRefreshController,
-                            onRefresh: () async {
-                              // await controller.getWeatherInfo();
-                              await controller.getLocationData(true);
-                              controller.smartRefreshController
-                                  .refreshCompleted();
-                            },
-                            child: MyWidgetsAnimator(
-                              apiCallStatus: controller.apiCallStatus,
-                              loadingWidget: () => const Center(
-                                child: CircularProgressIndicator(
-                                    color: Colors.white),
-                              ),
-                              successWidget: () => SingleChildScrollView(
-                                padding: const EdgeInsets.all(kPadding),
-                                child: Column(
-                                  children: [
-                                    // * Current Weather
-                                    CurrentWeather(controller: controller),
-                                    const Gap(kSpacing),
-
-                                    Column(
-                                      children: [
-                                        // * Hourly Forecast
-                                        HourlyForecast(controller: controller),
-                                        const Gap(kSpacing),
-
-                                        // * Daily Forecast
-                                        DailyForecast(controller: controller),
-                                        const Gap(kSpacing),
-
-                                        // * Weather Details
-                                        WeatherDetails(controller: controller),
-
-                                        // * Sunrise, Sunset
-                                        SunsetSunrise(controller: controller),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
                           ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
               ),
-            ),
-          ],
+              const Gap(20),
+              Text(
+                "About Today",
+                style: Get.textTheme.bodyLarge,
+              ),
+              const Gap(10),
+              GridView(
+                shrinkWrap: true,
+                padding: const EdgeInsets.all(0),
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 2 / 1,
+                  crossAxisSpacing: kSpacing,
+                  mainAxisSpacing: kSpacing,
+                ),
+                children: [
+                  gridContainer(
+                    text: "UV Index",
+                    value: UVCalculator.getUVCalculator(
+                      controller.currentWeather?.uvi ?? 0,
+                    ),
+                    value2: (controller.currentWeather?.uvi ?? 0) == 0
+                        ? ""
+                        : " (${controller.currentWeather?.uvi?.toStringAsFixed(0) ?? 0})",
+                  ),
+                  gridContainer(
+                    text: "Humidity",
+                    value: "${controller.currentWeather?.humidity ?? 0}",
+                    value2: "%",
+                  ),
+                  gridContainer(
+                    text: "Visibility",
+                    value:
+                        "${((controller.currentWeather?.visibility ?? 0) / 1000).toStringAsFixed(0)}",
+                    value2: "km",
+                  ),
+                  gridContainer(
+                    text: "Pressure",
+                    value: "${controller.currentWeather?.pressure ?? 0}",
+                    value2: "hPa",
+                  ),
+                  gridContainer(
+                    text: "Sunrise",
+                    value: DateFormat("hh:mm").format(
+                      controller.currentWeather?.sunrise
+                              ?.fromTimeStampToDateTime() ??
+                          DateTime.now(),
+                    ),
+                    value2: DateFormat("a").format(
+                      controller.currentWeather?.sunrise
+                              ?.fromTimeStampToDateTime() ??
+                          DateTime.now(),
+                    ),
+                  ),
+                  gridContainer(
+                    text: "Sunset",
+                    value: DateFormat("hh:mm").format(
+                      controller.currentWeather?.sunset
+                              ?.fromTimeStampToDateTime() ??
+                          DateTime.now(),
+                    ),
+                    value2: DateFormat("a").format(
+                      controller.currentWeather?.sunset
+                              ?.fromTimeStampToDateTime() ??
+                          DateTime.now(),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
-      );
-    });
+      ],
+    );
+  }
+
+  Widget gridContainer({
+    required String text,
+    required String value,
+    String? value2,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(kSpacing),
+      decoration: BoxDecoration(
+        color: Get.theme.splashColor.withOpacity(.15),
+        border: Border.all(
+          color: Get.theme.splashColor.withOpacity(.5),
+        ),
+        borderRadius: BorderRadius.circular(kBorderRadius),
+      ),
+      child: Column(
+        children: [
+          Text(
+            text,
+            style: Get.textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  value,
+                  style: Get.textTheme.headlineMedium,
+                ),
+                Text(
+                  value2 ?? "",
+                  style: Get.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // if (value2?.isNotEmpty ?? false)
+          //   Text(
+          //     value2 ?? "",
+          //     style: Get.textTheme.titleMedium,
+          //   ),
+        ],
+      ),
+    );
   }
 }
 

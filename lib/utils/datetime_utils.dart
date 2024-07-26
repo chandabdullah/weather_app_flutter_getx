@@ -36,11 +36,11 @@ class DateTimeUtils {
       //   return "Tomorrow";
       // }
       else {
-        return DateFormat('EEEE, MMM dd').format(date);
+        return DateFormat('EEE, MMM dd').format(date);
         // return DateFormat('EEEE').format(date);
       }
     } else {
-      return DateFormat('EEEE, MMM dd').format(date);
+      return DateFormat('EEE, MMM dd').format(date);
     }
   }
 }

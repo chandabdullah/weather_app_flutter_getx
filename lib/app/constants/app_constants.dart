@@ -3,7 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 Duration apiCallAfter = const Duration(hours: 1);
 
-String? temperatureFont = GoogleFonts.chakraPetch().fontFamily;
+String? temperatureFont = GoogleFonts.spaceGrotesk().fontFamily;
+// String? temperatureFont = GoogleFonts.chakraPetch().fontFamily;
 
 const double kPadding = 16.0;
 const double kSpacing = 12.0;
