@@ -30,7 +30,7 @@ Get local weather details, forecasts, and sunrise/sunset info in one app
     </div>
 </html>
 
-### Design 1
+### Design 2
 
 <html>
     <div style="display: flex; flex-wrap: wrap;">
