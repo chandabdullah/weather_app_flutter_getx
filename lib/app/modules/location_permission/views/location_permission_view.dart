@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 import 'package:get/get.dart';
-import 'package:weather_app/app/constants/app_constants.dart';
+import '/app/constants/app_constants.dart';
 
 import '../controllers/location_permission_controller.dart';
 

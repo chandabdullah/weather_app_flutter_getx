@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 // import 'package:app/app/model/user_model.dart';
 import 'package:get_storage/get_storage.dart';
 import '/app/models/cities_countries_model.dart';
@@ -19,6 +20,7 @@ class MySharedPref {
   static const String _todayWeatherKey = 'today_weather';
   static const String _updateDateKey = 'update_date';
   static const String _currentCityKey = 'current_city';
+  static const String _designKey = 'design';
 
   /// init get storage services
   static init() async {
@@ -82,5 +84,15 @@ class MySharedPref {
     var cityData = _storage.read(_currentCityKey);
     if (cityData == null) return null;
     return cityFromJson(cityData);
+  }
+
+  static setDesignNumber(int design) {
+    _storage.write(_designKey, design);
+  }
+
+  static int getDesignNumber() {
+    var design = _storage.read(_designKey);
+    if (design == null) return 1;
+    return design;
   }
 }

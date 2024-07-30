@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../modules/designs/bindings/designs_binding.dart';
+import '../modules/designs/views/designs_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/location_permission/bindings/location_permission_binding.dart';
@@ -37,6 +39,11 @@ class AppPages {
       name: _Paths.SETTINGS,
       page: () => const SettingsView(),
       binding: SettingsBinding(),
+    ),
+    GetPage(
+      name: _Paths.DESIGNS,
+      page: () => const DesignsView(),
+      binding: DesignsBinding(),
     ),
   ];
 }

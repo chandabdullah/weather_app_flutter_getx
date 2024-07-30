@@ -1,5 +1,5 @@
 name: weather_app
-version: 0.0.1+4
+version: 0.0.1+6
 publish_to: none
 description: A new Flutter project.
 environment: 
@@ -48,6 +48,8 @@ flutter:
     - assets/svg/
     - assets/svg/animated/
     - assets/svg/static/
+    - assets/presentation/
+    - assets/design_2/
 
 flutter_launcher_icons: 
   android: launcher_icon

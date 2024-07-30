@@ -1,4 +1,4 @@
-import 'package:weather_app/app/services/permissions_service.dart';
+import '/app/services/permissions_service.dart';
 
 import '/app/data/local/my_shared_pref.dart';
 import '/config/theme/my_theme.dart';
