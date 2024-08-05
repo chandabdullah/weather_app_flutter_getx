@@ -132,7 +132,6 @@ class Design2View extends GetView {
                             ),
                           ],
                         ),
-                        const Gap(10),
                         Text(
                           "Today, ${DateFormat("MMM dd").format(DateTime.now().toLocal())}",
                           style: Get.textTheme.titleMedium?.copyWith(
@@ -528,10 +527,15 @@ class Design2View extends GetView {
                   value,
                   style: Get.textTheme.headlineMedium,
                 ),
-                Text(
-                  value2 ?? "",
-                  style: Get.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.normal,
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 2,
+                  ),
+                  child: Text(
+                    value2 ?? "",
+                    style: Get.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.normal,
+                    ),
                   ),
                 ),
               ],

@@ -68,16 +68,16 @@ class WeatherUtils {
             : 'assets/svg/static/cloudy-day-1.svg';
       case Description.LIGHT_RAIN:
         return isNight
-            ? 'assets/svg/static/rainy-1.svg'
-            : 'assets/svg/static/rainy-1.svg';
-      case Description.MODERATE_RAIN:
-        return isNight
             ? 'assets/svg/static/rainy-2.svg'
             : 'assets/svg/static/rainy-2.svg';
+      case Description.MODERATE_RAIN:
+        return isNight
+            ? 'assets/svg/static/rainy-1.svg'
+            : 'assets/svg/static/rainy-1.svg';
       case Description.OVERCAST_CLOUDS:
         return isNight
-            ? 'assets/svg/static/rainy-3.svg'
-            : 'assets/svg/static/rainy-3.svg';
+            ? 'assets/svg/static/cloudy-night-1.svg'
+            : 'assets/svg/static/cloudy-day-1.svg';
       case Description.SCATTERED_CLOUDS:
         return isNight
             ? 'assets/svg/static/cloudy-night-2.svg'

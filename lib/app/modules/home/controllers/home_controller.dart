@@ -92,12 +92,15 @@ class HomeController extends GetxController {
     }
 
     update();
+  }
 
+  getWeatherData([bool onRefresh = false]) async {
     DateTime now = DateTime.now();
     DateTime? updatedDate = MySharedPref.getUpdateDate();
 
     if (updatedDate == null) {
-      getWeatherInfo();
+      await getLocationData();
+      await getWeatherInfo();
     } else {
       DateTime apiCallDate = updatedDate.add(apiCallAfter);
 
@@ -107,14 +110,11 @@ class HomeController extends GetxController {
       );
 
       if ((now.isAfter(apiCallDate) || onRefresh)) {
-        getWeatherInfo();
+        await getLocationData();
+        await getWeatherInfo();
       } else {
         var response = MySharedPref.getTodaysWeather();
-        currentWeather = response?.current;
-        hourlyForecast = response?.hourly ?? [];
-        dailyForecast = response?.daily ?? [];
-
-        apiCallStatus = ApiCallStatus.success;
+        saveResponse(response);
       }
     }
 
@@ -187,7 +187,7 @@ class HomeController extends GetxController {
       bool isInternetAvailable =
           await ConnectivityService.checkInternetConnectivity();
       if (isInternetAvailable) {
-        await getLocationData();
+        await getWeatherData();
       } else {
         isInternetConnected = false;
         update();
@@ -196,7 +196,7 @@ class HomeController extends GetxController {
       bool isInternetAvailable =
           await ConnectivityService.checkInternetConnectivity();
       if (isInternetAvailable) {
-        await getLocationData();
+        await getWeatherData();
       } else {
         saveResponse(MySharedPref.getTodaysWeather());
       }
