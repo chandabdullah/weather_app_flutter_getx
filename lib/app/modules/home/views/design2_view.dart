@@ -10,6 +10,7 @@ import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:weather_app/app/routes/app_pages.dart';
+import '../../../../utils/utils.dart';
 import '/app/constants/app_constants.dart';
 import '/app/models/weather_model.dart';
 import '/app/modules/home/controllers/home_controller.dart';
@@ -95,7 +96,7 @@ class Design2View extends GetView {
           BlurContainer(
             color: MyGradient.getAppBarColor(
               controller.currentWeather?.weather?.first.description,
-            ).withOpacity(.3),
+            ).withSafeOpacity(.3),
             filter: ImageFilter.blur(),
             child: SafeArea(
               child: Column(
@@ -276,9 +277,9 @@ class Design2View extends GetView {
                         vertical: 5,
                       ),
                       decoration: BoxDecoration(
-                        color: Get.theme.splashColor.withOpacity(.15),
+                        color: Get.theme.splashColor.withSafeOpacity(.15),
                         border: Border.all(
-                          color: Get.theme.splashColor.withOpacity(.5),
+                          color: Get.theme.splashColor.withSafeOpacity(.5),
                         ),
                         borderRadius: BorderRadius.circular(kBorderRadius),
                         // shape: BoxShape.circle,
@@ -336,9 +337,9 @@ class Design2View extends GetView {
                   return Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: Get.theme.splashColor.withOpacity(.15),
+                      color: Get.theme.splashColor.withSafeOpacity(.15),
                       border: Border.all(
-                        color: Get.theme.splashColor.withOpacity(.5),
+                        color: Get.theme.splashColor.withSafeOpacity(.5),
                       ),
                       borderRadius: BorderRadius.circular(kBorderRadius),
                     ),
@@ -504,9 +505,9 @@ class Design2View extends GetView {
     return Container(
       padding: const EdgeInsets.all(kSpacing),
       decoration: BoxDecoration(
-        color: Get.theme.splashColor.withOpacity(.15),
+        color: Get.theme.splashColor.withSafeOpacity(.15),
         border: Border.all(
-          color: Get.theme.splashColor.withOpacity(.5),
+          color: Get.theme.splashColor.withSafeOpacity(.5),
         ),
         borderRadius: BorderRadius.circular(kBorderRadius),
       ),

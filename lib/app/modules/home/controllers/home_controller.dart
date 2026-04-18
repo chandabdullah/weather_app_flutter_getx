@@ -1,30 +1,43 @@
+// ===============================
+// home_controller.dart
+// Clean Professional Version
+// ===============================
+
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
-import 'package:logger/logger.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+
 import '/app/constants/app_constants.dart';
+import '/app/data/local/my_coordinates.dart';
 import '/app/data/local/my_shared_pref.dart';
 import '/app/environment/environment.dart';
 import '/app/models/cities_countries_model.dart';
 import '/app/models/weather_model.dart';
 import '/app/services/api_call_status.dart';
 import '/app/services/base_client.dart';
-import '/app/services/location_service.dart';
 import '/app/services/connectivity_service.dart';
-import '/app/data/local/my_coordinates.dart';
+import '/app/services/location_service.dart';
 
 class HomeController extends GetxController {
+  // =====================================================
+  // STATES
+  // =====================================================
+
   ApiCallStatus apiCallStatus = ApiCallStatus.holding;
+
+  bool isInitializing = true;
+  bool isLoadingLocation = false;
+  bool isLocationEnabled = true;
+  bool isInternetConnected = true;
+
+  // =====================================================
+  // DATA
+  // =====================================================
 
   RefreshController smartRefreshController = RefreshController();
 
-  LocationData? coordinates = MyCoordinates.getCoordinates();
-
   String? currentCity;
-  bool isInternetConnected = true;
-  bool isLoadingLocation = false;
-  bool isLocationEnabled = false;
 
   double? latitude;
   double? longitude;
@@ -33,109 +46,121 @@ class HomeController extends GetxController {
   List<Current> hourlyForecast = [];
   List<Daily> dailyForecast = [];
 
-  getLocationData([bool onRefresh = false]) async {
+  // =====================================================
+  // APP START
+  // =====================================================
+
+  @override
+  void onReady() async {
+    super.onReady();
+    await initializeApp();
+  }
+
+  Future<void> initializeApp() async {
+    isInitializing = true;
+    update();
+
+    isInternetConnected = await ConnectivityService.checkInternetConnectivity();
+
+    if (!isInternetConnected) {
+      final cache = MySharedPref.getTodaysWeather();
+
+      if (cache != null) {
+        saveResponse(cache);
+      }
+
+      isInitializing = false;
+      update();
+      return;
+    }
+
+    await getWeatherData();
+
+    isInitializing = false;
+    update();
+  }
+
+  // =====================================================
+  // MAIN WEATHER FLOW
+  // =====================================================
+
+  Future<void> getWeatherData([bool onRefresh = false]) async {
+    final cachedDate = MySharedPref.getUpdateDate();
+
+    if (cachedDate == null) {
+      await getLocationData();
+      await getWeatherInfo();
+      return;
+    }
+
+    final now = DateTime.now();
+    final nextCall = cachedDate.add(apiCallAfter);
+
+    if (now.isAfter(nextCall) || onRefresh) {
+      await getLocationData();
+      await getWeatherInfo();
+    } else {
+      final cache = MySharedPref.getTodaysWeather();
+
+      if (cache != null) {
+        saveResponse(cache);
+      }
+    }
+  }
+
+  // =====================================================
+  // LOCATION
+  // =====================================================
+
+  Future<void> getLocationData() async {
     isLoadingLocation = true;
     update();
 
-    City? currentLocalCity = MySharedPref.getCurrentCity();
-
     await LocationService.enableLocationService();
-
     await LocationService.requestLocationPermission();
 
-    var status = await LocationService.getPermissionStatus;
+    final permission = await LocationService.getPermissionStatus;
 
-    if (status != PermissionStatus.granted) {
-      isLoadingLocation = false;
+    if (permission != PermissionStatus.granted) {
       isLocationEnabled = false;
+      isLoadingLocation = false;
       update();
       return;
     }
 
-    LocationData? location = await LocationService.getCurrentLocation();
-    if (location == null) {
-      isLoadingLocation = false;
+    final location = await LocationService.getCurrentLocation();
+
+    if (location == null ||
+        location.latitude == null ||
+        location.longitude == null) {
       isLocationEnabled = false;
-      update();
-      return;
-    }
-    if (location.latitude == null || location.longitude == null) {
       isLoadingLocation = false;
-      isLocationEnabled = false;
       update();
       return;
     }
 
     latitude = location.latitude;
     longitude = location.longitude;
-    // latitude = 34.0144;
-    // longitude = 71.5675;
-    // TODO:
 
-    City? city = await LocationService.getCityFromLatLng(
-      latitude ?? 0,
-      longitude ?? 0,
+    final city = await LocationService.getCityFromLatLng(
+      latitude!,
+      longitude!,
     );
-    currentCity = city?.city;
+
+    currentCity = city?.city ?? "Unknown";
+
     MySharedPref.setCurrentCity(city ?? City());
 
-    if (currentLocalCity == null) {
-      isLocationEnabled = true;
-      isLoadingLocation = false;
-    } else {
-      currentCity = currentLocalCity.city;
-      latitude = currentLocalCity.lat;
-      longitude = currentLocalCity.lng;
-
-      isLocationEnabled = true;
-      isLoadingLocation = false;
-    }
-
-    update();
-  }
-
-  getWeatherData([bool onRefresh = false]) async {
-    DateTime now = DateTime.now();
-    DateTime? updatedDate = MySharedPref.getUpdateDate();
-
-    if (updatedDate == null) {
-      await getLocationData();
-      await getWeatherInfo();
-    } else {
-      DateTime apiCallDate = updatedDate.add(apiCallAfter);
-
-      Logger().i(
-        "onRefresh: $onRefresh - "
-        "API will call on ${DateFormat('hh:mm').format(apiCallDate)} but now it's ${DateFormat('hh:mm').format(now)}",
-      );
-
-      if ((now.isAfter(apiCallDate) || onRefresh)) {
-        await getLocationData();
-        await getWeatherInfo();
-      } else {
-        var response = MySharedPref.getTodaysWeather();
-        saveResponse(response);
-      }
-    }
-
-    update();
-  }
-
-  saveResponse(WeatherModel? response) {
-    City? currentLocalCity = MySharedPref.getCurrentCity();
-    currentCity = currentLocalCity?.city ?? "";
-    currentWeather = response?.current;
-    hourlyForecast = response?.hourly ?? [];
-    hourlyForecast = hourlyForecast.take(24).toList();
-    dailyForecast = response?.daily ?? [];
-    isInternetConnected = true;
     isLocationEnabled = true;
     isLoadingLocation = false;
-    apiCallStatus = ApiCallStatus.success;
     update();
   }
 
-  getWeatherInfo() {
+  // =====================================================
+  // API
+  // =====================================================
+
+  Future<void> getWeatherInfo() async {
     BaseClient.safeApiCall(
       EnvironmentConfig.BASE_URL,
       RequestType.get,
@@ -144,70 +169,50 @@ class HomeController extends GetxController {
         'lon': longitude,
         'units': 'metric',
         'exclude': 'minutely',
-        'date': DateFormat('yyyy-MM-dd').format(DateTime.now().toLocal()),
+        'date': DateFormat('yyyy-MM-dd').format(DateTime.now()),
         'appid': EnvironmentConfig.API_KEY,
-      },
-      onError: (e) {
-        apiCallStatus = ApiCallStatus.error;
-        update();
       },
       onLoading: () {
         apiCallStatus = ApiCallStatus.loading;
         update();
       },
+      onError: (e) {
+        apiCallStatus = ApiCallStatus.error;
+        update();
+      },
       onSuccess: (resp) {
-        var response = weatherModelFromJson(resp.data);
+        final response = weatherModelFromJson(resp.data);
+
         saveResponse(response);
-        // currentWeather = response.current;
-        // hourlyForecast = response.hourly ?? [];
-        // dailyForecast = response.daily ?? [];
 
         MySharedPref.setTodaysWeather(response);
         MySharedPref.setUpdateDate(DateTime.now());
 
-        apiCallStatus = ApiCallStatus.success;
-        update();
-
-        MyCoordinates.saveCoordinates(LocationData.fromMap({
-          "latitude": latitude,
-          "longitude": longitude,
-        }));
+        MyCoordinates.saveCoordinates(
+          LocationData.fromMap({
+            "latitude": latitude,
+            "longitude": longitude,
+          }),
+        );
       },
     );
   }
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
+  // =====================================================
+  // SAVE RESPONSE
+  // =====================================================
 
-  @override
-  void onReady() async {
-    if (MySharedPref.getTodaysWeather() == null) {
-      bool isInternetAvailable =
-          await ConnectivityService.checkInternetConnectivity();
-      if (isInternetAvailable) {
-        await getWeatherData();
-      } else {
-        isInternetConnected = false;
-        update();
-      }
-    } else {
-      bool isInternetAvailable =
-          await ConnectivityService.checkInternetConnectivity();
-      if (isInternetAvailable) {
-        await getWeatherData();
-      } else {
-        saveResponse(MySharedPref.getTodaysWeather());
-      }
-    }
+  void saveResponse(WeatherModel response) {
+    currentWeather = response.current;
 
-    // await getWeatherInfo();
-    super.onReady();
-  }
+    hourlyForecast = response.hourly?.take(24).toList() ?? [];
 
-  @override
-  void onClose() {
-    super.onClose();
+    dailyForecast = response.daily ?? [];
+
+    apiCallStatus = ApiCallStatus.success;
+    isLocationEnabled = true;
+    isLoadingLocation = false;
+
+    update();
   }
 }

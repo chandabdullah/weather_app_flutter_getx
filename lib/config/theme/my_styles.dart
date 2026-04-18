@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import '../../utils/utils.dart';
 import '/app/constants/app_constants.dart';
 
 import 'dark_theme_colors.dart';
@@ -22,7 +23,7 @@ class MyStyles {
   static InputDecorationTheme getInputTheme({required bool isLightTheme}) =>
       InputDecorationTheme(
         filled: true,
-        fillColor: Get.theme.cardColor.withOpacity(.3),
+        fillColor: Get.theme.cardColor.withSafeOpacity(.3),
         hintStyle: Get.textTheme.bodyMedium,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(kBorderRadius),
@@ -126,13 +127,13 @@ class MyStyles {
         ),
         bodyMedium: Get.textTheme.bodyMedium?.copyWith(
           color: isLightTheme
-              ? LightThemeColors.bodyTextColor.withOpacity(.7)
-              : DarkThemeColors.bodyTextColor.withOpacity(.7),
+              ? LightThemeColors.bodyTextColor.withSafeOpacity(.7)
+              : DarkThemeColors.bodyTextColor.withSafeOpacity(.7),
         ),
         bodySmall: Get.textTheme.bodySmall?.copyWith(
           color: isLightTheme
-              ? LightThemeColors.bodyTextColor.withOpacity(.7)
-              : DarkThemeColors.bodyTextColor.withOpacity(.7),
+              ? LightThemeColors.bodyTextColor.withSafeOpacity(.7)
+              : DarkThemeColors.bodyTextColor.withSafeOpacity(.7),
         ),
         displayLarge: Get.textTheme.displayLarge?.copyWith(
           fontWeight: FontWeight.bold,
@@ -252,14 +253,14 @@ class MyStyles {
           {required bool isLightTheme}) =>
       ElevatedButtonThemeData(
         style: ButtonStyle(
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(6.r),
               //side: BorderSide(color: Colors.teal, width: 2.0),
             ),
           ),
-          elevation: MaterialStateProperty.all(0),
-          padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+          elevation: WidgetStateProperty.all(0),
+          padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
               EdgeInsets.symmetric(vertical: 8.h)),
           textStyle: getElevatedButtonTextStyle(isLightTheme),
           foregroundColor: MaterialStateProperty.resolveWith<Color>(
@@ -282,8 +283,8 @@ class MyStyles {
             (Set<MaterialState> states) {
               if (states.contains(MaterialState.pressed)) {
                 return isLightTheme
-                    ? LightThemeColors.buttonColor.withOpacity(.5)
-                    : DarkThemeColors.buttonColor.withOpacity(.5);
+                    ? LightThemeColors.buttonColor.withSafeOpacity(.5)
+                    : DarkThemeColors.buttonColor.withSafeOpacity(.5);
               } else if (states.contains(MaterialState.disabled)) {
                 return isLightTheme
                     ? LightThemeColors.buttonDisabledColor
@@ -301,15 +302,15 @@ class MyStyles {
   static TextButtonThemeData getTextButtonTheme({required bool isLightTheme}) =>
       TextButtonThemeData(
         style: ButtonStyle(
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(6.r),
               //side: BorderSide(color: Colors.teal, width: 2.0),
             ),
           ),
-          elevation: MaterialStateProperty.all(0),
-          padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-              EdgeInsets.symmetric(
+          elevation: WidgetStateProperty.all(0),
+          padding:
+              WidgetStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.symmetric(
             vertical: 8.h,
             horizontal: 5.w,
           )),
@@ -318,8 +319,8 @@ class MyStyles {
             (Set<MaterialState> states) {
               if (states.contains(MaterialState.pressed)) {
                 return isLightTheme
-                    ? LightThemeColors.primaryColor.withOpacity(.1)
-                    : DarkThemeColors.primaryColor.withOpacity(.1);
+                    ? LightThemeColors.primaryColor.withSafeOpacity(.1)
+                    : DarkThemeColors.primaryColor.withSafeOpacity(.1);
               } else if (states.contains(MaterialState.disabled)) {
                 return isLightTheme
                     ? LightThemeColors.buttonDisabledColor
@@ -335,7 +336,7 @@ class MyStyles {
           {required bool isLightTheme}) =>
       OutlinedButtonThemeData(
         style: ButtonStyle(
-          side: MaterialStateProperty.all<BorderSide?>(
+          side: WidgetStateProperty.all<BorderSide?>(
             BorderSide(
               color: isLightTheme
                   ? LightThemeColors.primaryColor
@@ -343,13 +344,13 @@ class MyStyles {
               width: 1.0,
             ),
           ),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(6.r),
             ),
           ),
-          elevation: MaterialStateProperty.all(0),
-          padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+          elevation: WidgetStateProperty.all(0),
+          padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
               EdgeInsets.symmetric(vertical: 8.h)),
           textStyle: getElevatedButtonTextStyle(isLightTheme),
           // backgroundColor: MaterialStateProperty.resolveWith<Color>(

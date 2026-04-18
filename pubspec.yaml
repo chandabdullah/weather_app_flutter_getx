@@ -49,6 +49,8 @@ flutter:
 
   assets:
     - .env.prod
+    - assets/
+    - assets/logo/
     - assets/svg/
     - assets/svg/animated/
     - assets/svg/static/
@@ -57,17 +59,17 @@ flutter:
 
 flutter_launcher_icons:
   android: launcher_icon
-  image_path: assets/images/logo.png
+  image_path: assets/logo/icon_blue.png
   ios: true
   min_sdk_android: 21
 
 flutter_native_splash:
-  color: "#054075"
-  image: "assets/images/splash.png"
-  color_dark: "#054075"
-  image_dark: "assets/images/splash.png"
+  color: "#039DF5"
+  image: "assets/logo/splash_transparent.png"
+  color_dark: "#039DF5"
+  image_dark: "assets/logo/splash_transparent.png"
   android_12:
-    icon_background_color: "#054075"
-    image: "assets/images/splash.png"
-    icon_background_color_dark: "#054075"
-    image_dark: "assets/images/splash.png"
+    icon_background_color: "#039DF5"
+    image: "assets/logo/splash_transparent.png"
+    icon_background_color_dark: "#039DF5"
+    image_dark: "assets/logo/splash_transparent.png"

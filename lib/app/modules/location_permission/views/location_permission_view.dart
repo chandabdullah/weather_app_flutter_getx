@@ -1,149 +1,143 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-
 import 'package:get/get.dart';
-import '/app/constants/app_constants.dart';
-
 import '../controllers/location_permission_controller.dart';
 
 class LocationPermissionView extends GetView<LocationPermissionController> {
   const LocationPermissionView({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    var theme = Get.theme;
+    final theme = Get.theme;
+
     return Scaffold(
-      backgroundColor: Get.theme.primaryColor,
-      appBar: AppBar(
-        backgroundColor: Get.theme.primaryColor,
-        toolbarHeight: 0,
-      ),
-      body: SafeArea(
-        child: Container(
-          width: Get.width,
-          height: Get.height,
-          padding: const EdgeInsets.all(kPadding),
+      body: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          // Gradient gives a much more modern feel than a flat color
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              theme.primaryColor,
+              theme.primaryColor.withValues(alpha: 0.8),
+            ],
+          ),
+        ),
+        child: SafeArea(
           child: Column(
             children: [
-              SizedBox(
-                width: Get.width,
-                height: Get.height / 2,
-                child: Stack(
-                  children: [
-                    const Center(
-                      child: Icon(
-                        Icons.location_on_rounded,
-                        size: 150,
-                        color: Colors.white,
+              const Gap(40),
+              // --- Illustration Section ---
+              Expanded(
+                flex: 3,
+                child: Center(
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      // Animated-like pulse circles
+                      _buildPulseCircle(200, 0.1),
+                      _buildPulseCircle(150, 0.2),
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white.withValues(alpha: 0.15),
+                        ),
+                        padding: const EdgeInsets.all(40),
+                        child: const Icon(
+                          Icons.location_on_rounded,
+                          size: 100,
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-                    Positioned(
-                      top: 50,
-                      left: 50,
-                      child: Icon(
-                        Icons.circle_outlined,
-                        size: 30,
-                        color: Colors.white.withOpacity(.5),
-                      ),
-                    ),
-                    Positioned(
-                      right: 4,
-                      bottom: 100,
-                      child: Icon(
-                        Icons.location_on_outlined,
-                        size: 30,
-                        color: Colors.white.withOpacity(.5),
-                      ),
-                    ),
-                    Positioned(
-                      left: 40,
-                      bottom: 100,
-                      child: Icon(
-                        Icons.circle_outlined,
-                        size: 20,
-                        color: Colors.white.withOpacity(.5),
-                      ),
-                    ),
-                    Positioned(
-                      top: 40,
-                      bottom: 100,
-                      right: 50,
-                      child: Icon(
-                        Icons.circle_outlined,
-                        size: 20,
-                        color: Colors.white.withOpacity(.5),
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 40,
-                      left: 50,
-                      right: 50,
-                      child: Icon(
-                        Icons.circle_outlined,
-                        size: 20,
-                        color: Colors.white.withOpacity(.5),
-                      ),
-                    ),
-                    Positioned(
-                      top: 40,
-                      left: 100,
-                      right: 50,
-                      child: Icon(
-                        Icons.location_on_outlined,
-                        size: 20,
-                        color: Colors.white.withOpacity(.5),
-                      ),
-                    ),
-                    Positioned(
-                      top: 40,
-                      left: 40,
-                      bottom: 50,
-                      child: Icon(
-                        Icons.location_on_outlined,
-                        size: 20,
-                        color: Colors.white.withOpacity(.5),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
+
+              // --- Content Section ---
               Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    const Gap(30),
-                    Text(
-                      "Enable Location",
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.titleLarge,
-                    ),
-                    Text(
-                      "To provide near by drivers to your location please grant permission for the application to access your device s geo location",
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.bodyMedium,
-                    ),
-                    // const Gap(20),
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        padding: MaterialStateProperty.all(
-                          const EdgeInsets.symmetric(
-                            horizontal: kPadding,
-                          ),
-                        ),
-                        backgroundColor: MaterialStateProperty.all(
-                          Colors.white,
-                        ),
-                        foregroundColor: MaterialStateProperty.all(
-                          Get.theme.primaryColor,
+                flex: 2,
+                child: Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.all(16),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 20,
+                        offset: const Offset(0, 10),
+                      )
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "Enable Location",
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
                         ),
                       ),
-                      onPressed: controller.onEnablePermissions,
-                      child: const Text("Enable Now"),
-                    ),
-                  ],
+                      const Gap(12),
+                      Text(
+                        "To connect you with nearby drivers and ensure accurate arrivals, please allow access to your device's location.",
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: Colors.black54,
+                          height: 1.5,
+                        ),
+                      ),
+                      const Spacer(),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 55,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: theme.primaryColor,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            elevation: 0,
+                          ),
+                          onPressed: controller.onEnablePermissions,
+                          child: const Text(
+                            "Enable Location",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const Gap(10),
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPulseCircle(double size, double opacity) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: Colors.white.withValues(alpha: opacity),
+          width: 2,
         ),
       ),
     );

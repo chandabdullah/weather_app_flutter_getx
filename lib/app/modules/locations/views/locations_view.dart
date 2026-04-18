@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 import 'package:get/get.dart';
+import '../../../../utils/utils.dart';
 import '/app/constants/app_constants.dart';
 import 'package:weather_icons/weather_icons.dart';
 
@@ -46,7 +47,7 @@ class LocationsView extends GetView<LocationsController> {
               decoration: InputDecoration(
                 hintText: "Search for a city...",
                 hintStyle: Get.textTheme.bodyMedium?.copyWith(
-                  color: Get.theme.cardColor.withOpacity(.5),
+                  color: Get.theme.cardColor.withSafeOpacity(.5),
                 ),
                 prefixIcon: const Icon(Icons.search),
               ),
@@ -65,7 +66,7 @@ class LocationsView extends GetView<LocationsController> {
             return Container(
               padding: const EdgeInsets.all(kPadding),
               decoration: BoxDecoration(
-                color: Get.theme.cardColor.withOpacity(.3),
+                color: Get.theme.cardColor.withSafeOpacity(.3),
                 borderRadius: BorderRadius.circular(kBorderRadius),
               ),
               child: Row(

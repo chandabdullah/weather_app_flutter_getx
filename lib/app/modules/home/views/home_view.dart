@@ -1,33 +1,21 @@
+// ===============================
+// home_view.dart
+// Clean UI State Management
+// ===============================
+
 import 'dart:ui';
 
-import 'package:draggable_home/draggable_home.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:flutter_weather_bg_null_safety/bg/weather_bg.dart';
-import 'package:flutter_weather_bg_null_safety/utils/weather_type.dart';
 import 'package:gap/gap.dart';
-
 import 'package:get/get.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:flutter_weather_bg_null_safety/bg/weather_bg.dart';
+
+import '../../../services/api_call_status.dart';
+import '/app/constants/app_constants.dart';
 import '/app/data/local/my_shared_pref.dart';
 import '/app/modules/home/views/design1_view.dart';
 import '/app/modules/home/views/design2_view.dart';
-import '/app/routes/app_pages.dart';
-import '/app/components/my_widgets_animator.dart';
-import '/app/constants/app_constants.dart';
-import '/app/models/weather_model.dart';
-import '/app/services/api_call_status.dart';
-import '/config/theme/my_gradient.dart';
-import '/utils/calculation.dart';
-import '/utils/uv_calculator.dart';
 import '/utils/weather_utils.dart';
-import 'package:weather_icons/weather_icons.dart';
-import 'package:intl/intl.dart';
-import '/utils/datetime_utils.dart';
-import 'package:glass/glass.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -39,330 +27,259 @@ class HomeView extends GetView<HomeController> {
     return GetBuilder<HomeController>(
       builder: (_) {
         return Scaffold(
-          // appBar: AppBar(
-          //   // backgroundColor: Get.theme.primaryColor,
-          //   backgroundColor: MyGradient.getAppBarColor(
-          //     controller.currentWeather?.weather?.first.description,
-          //     // Description.FEW_CLOUDS,
-          //   ),
-          //   elevation: 0,
-          //   title: GestureDetector(
-          //     onTap: () {
-          //       Get.toNamed(Routes.LOCATIONS);
-          //     },
-          //     child: Row(
-          //       mainAxisSize: MainAxisSize.min,
-          //       children: [
-          //         const Icon(
-          //           Icons.location_on,
-          //           color: Colors.white,
-          //         ),
-          //         const Gap(10),
-          //         Text(
-          //           controller.currentCity ?? "",
-          //           style: const TextStyle(
-          //             color: Colors.white,
-          //           ),
-          //         ),
-          //         const Icon(
-          //           Icons.arrow_drop_down,
-          //           color: Colors.white,
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          //   centerTitle: false,
-          //   actions: [
-          //     // Text(
-          //     //   DateFormat(DateFormat.ABBR_MONTH_DAY).format(DateTime.now()),
-          //     //   style: Get.textTheme.bodyLarge?.copyWith(
-          //     //     color: Colors.white,
-          //     //   ),
-          //     // ),
-          //     IconButton(
-          //       onPressed: () {},
-          //       icon: const Icon(Icons.settings),
-          //     ),
-          //     const Gap(10),
-          //   ],
-          //   bottom: PreferredSize(
-          //     preferredSize: const Size.fromHeight(80),
-          //     child: Row(
-          //       mainAxisAlignment: MainAxisAlignment.start,
-          //       children: [
-          //         Padding(
-          //           padding: const EdgeInsets.only(
-          //             left: kPadding,
-          //           ),
-          //           child: Row(
-          //             children: [
-          //               Row(
-          //                 crossAxisAlignment: CrossAxisAlignment.start,
-          //                 children: [
-          //                   Text(
-          //                     controller.apiCallStatus == ApiCallStatus.success
-          //                         ? "${controller.currentWeather?.temp?.toStringAsFixed(0)}"
-          //                         : "__",
-          //                     style: Get.textTheme.displayLarge?.copyWith(
-          //                       fontWeight: FontWeight.bold,
-          //                       color: Colors.white,
-          //                     ),
-          //                   ),
-          //                   const Icon(
-          //                     WeatherIcons.celsius,
-          //                     size: 40,
-          //                     color: Colors.white,
-          //                   ),
-          //                 ],
-          //               ),
-          //               const Gap(10),
-          //               // if (controller.isLocationEnabled)
-          //               if (controller
-          //                       .currentWeather?.weather?.first.description !=
-          //                   null)
-          //                 //   Image.network(
-          //                 //     'https://openweathermap.org/img/wn/${controller.currentWeather?.weather?.first.icon}@2x.png',
-          //                 //     height: 100,
-          //                 //     width: 100,
-          //                 //   ),
-          //                 // SvgPicture.asset(
-          //                 //   'assets/svg/static/day.svg',
-          //                 //   height: 85,
-          //                 // ),
-          //                 Icon(
-          //                   WeatherUtils.getWeatherIcon(
-          //                     controller
-          //                         .currentWeather?.weather?.first.description,
-          //                     date: controller.currentWeather?.dt,
-          //                     sunrise: controller.currentWeather?.sunrise,
-          //                     sunset: controller.currentWeather?.sunset,
-          //                   ),
-          //                   size: 50,
-          //                   color: Colors.white,
-          //                 ),
-          //             ],
-          //           ),
-          //         ),
-          //         const Spacer(),
-          //         if (controller.apiCallStatus == ApiCallStatus.success)
-          //           Column(
-          //             crossAxisAlignment: CrossAxisAlignment.end,
-          //             children: [
-          //               Text(
-          //                 DateFormat(DateFormat.ABBR_MONTH_DAY).format(
-          //                   controller.currentWeather?.dt
-          //                           ?.fromTimeStampToDateTime() ??
-          //                       DateTime.now(),
-          //                 ),
-          //                 style: Get.textTheme.titleLarge?.copyWith(
-          //                   color: Colors.white,
-          //                 ),
-          //               ),
-          //               const Gap(4),
-          //               if (controller.currentWeather?.weather?.first.main !=
-          //                   null)
-          //                 Text(
-          //                   descriptionValues.reverseMap[controller.currentWeather
-          //                               ?.weather?.first.description]
-          //                           .toString()
-          //                           .capitalize ??
-          //                       "",
-          //                   style: Get.textTheme.titleMedium?.copyWith(
-          //                     color: Colors.white,
-          //                   ),
-          //                 ),
-          //               Text(
-          //                 "Feel like ${controller.currentWeather?.feelsLike?.toStringAsFixed(0)}ºC",
-          //                 style: Get.textTheme.titleMedium?.copyWith(
-          //                   color: Colors.white,
-          //                 ),
-          //               ),
-          //               const Gap(5),
-          //             ],
-          //           ),
-          //         const Gap(kSpacing),
-          //       ],
-          //     ),
-          //   ),
-          // ),
-
           body: Stack(
             children: [
-              WeatherBg(
-                width: Get.width,
-                height: Get.height,
-                weatherType: WeatherUtils.getWeatherTypeBg(
-                  WeatherUtils.getRandomDescription(),
-                ),
-              ),
-              controller.isLoadingLocation
-                  ? SizedBox(
-                      width: Get.width,
-                      height: Get.height,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const CircularProgressIndicator(
-                            color: Colors.white,
-                          ),
-                          const Gap(kSpacing),
-                          Text(
-                            "Getting info...",
-                            style: Get.textTheme.bodyLarge?.copyWith(
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : !controller.isInternetConnected
-                      ? SizedBox(
-                          width: Get.width,
-                          height: Get.height,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.wifi_off_rounded,
-                                size: 50,
-                                color: Colors.white,
-                              ),
-                              const Gap(kSpacing),
-                              Text(
-                                "No Internet Connection!",
-                                style: Get.textTheme.bodyLarge?.copyWith(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              const Gap(20),
-                              TextButton(
-                                style: ButtonStyle(
-                                  elevation: MaterialStateProperty.all(0),
-                                  overlayColor: MaterialStateProperty.all(
-                                    Colors.white.withOpacity(.2),
-                                  ),
-                                  backgroundColor: MaterialStateProperty.all(
-                                    Get.theme.primaryColor,
-                                  ),
-                                  padding: MaterialStateProperty.all(
-                                    const EdgeInsets.symmetric(
-                                      horizontal: kPadding,
-                                    ),
-                                  ),
-                                ),
-                                onPressed: () {
-                                  controller.onReady();
-                                },
-                                child: Text(
-                                  "Enable Now",
-                                  style: Get.textTheme.titleMedium?.copyWith(
-                                    color: Colors.white,
-                                    // fontSize: 20,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      : !controller.isLocationEnabled
-                          ? Container(
-                              padding: const EdgeInsets.all(kPadding * 3),
-                              height: Get.height,
-                              width: Get.width,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const Icon(
-                                    Icons.location_off_rounded,
-                                    size: 50,
-                                    color: Colors.white,
-                                  ),
-                                  const Gap(20),
-                                  Text(
-                                    "Location Disabled",
-                                    textAlign: TextAlign.center,
-                                    style: Get.textTheme.titleLarge?.copyWith(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  const Gap(8),
-                                  Text(
-                                    "Enable location permission to get weather detail for your area",
-                                    textAlign: TextAlign.center,
-                                    style: Get.textTheme.bodyMedium?.copyWith(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  const Gap(20),
-                                  TextButton(
-                                    style: ButtonStyle(
-                                      elevation: MaterialStateProperty.all(0),
-                                      overlayColor: MaterialStateProperty.all(
-                                        Colors.white.withOpacity(.2),
-                                      ),
-                                      backgroundColor:
-                                          MaterialStateProperty.all(
-                                        Get.theme.primaryColor,
-                                      ),
-                                      padding: MaterialStateProperty.all(
-                                        const EdgeInsets.symmetric(
-                                          horizontal: kPadding,
-                                        ),
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      controller.getLocationData();
-                                    },
-                                    child: Text(
-                                      "Enable Now",
-                                      style:
-                                          Get.textTheme.titleMedium?.copyWith(
-                                        color: Colors.white,
-                                        // fontSize: 20,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          : MyWidgetsAnimator(
-                              apiCallStatus: controller.apiCallStatus,
-                              loadingWidget: () => SizedBox(
-                                width: Get.width,
-                                height: Get.height,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const CircularProgressIndicator(
-                                      color: Colors.white,
-                                    ),
-                                    const Gap(kSpacing),
-                                    Text(
-                                      "Getting info...",
-                                      style: Get.textTheme.bodyLarge?.copyWith(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              successWidget: () =>
-                                  MySharedPref.getDesignNumber() == 1
-                                      ? Design1View(
-                                          controller: controller,
-                                        )
-                                      : Design2View(
-                                          controller: controller,
-                                        ),
-                            ),
+              _background(),
+              _body(),
             ],
           ),
         );
       },
+    );
+  }
+
+  Widget _background() {
+    return WeatherBg(
+      width: Get.width,
+      height: Get.height,
+      weatherType: WeatherUtils.getWeatherTypeBg(
+        WeatherUtils.getRandomDescription(),
+      ),
+    );
+  }
+
+  Widget _body() {
+    if (controller.isInitializing ||
+        controller.isLoadingLocation ||
+        controller.apiCallStatus == ApiCallStatus.loading) {
+      return const _LoadingView();
+    }
+
+    if (!controller.isInternetConnected && controller.currentWeather == null) {
+      return _StateView(
+        icon: Icons.wifi_off_rounded,
+        title: "No Internet",
+        subtitle: "Please connect to internet.",
+        buttonText: "Retry",
+        onTap: controller.initializeApp,
+      );
+    }
+
+    if (!controller.isLocationEnabled) {
+      return _StateView(
+        icon: Icons.location_off_rounded,
+        title: "Location Disabled",
+        subtitle: "Enable location permission.",
+        buttonText: "Enable Now",
+        onTap: controller.initializeApp,
+      );
+    }
+
+    return _design();
+  }
+
+  Widget _design() {
+    final design = MySharedPref.getDesignNumber();
+
+    if (design == 1) {
+      return Design1View(controller: controller);
+    }
+
+    return Design2View(controller: controller);
+  }
+}
+
+// =====================================================
+
+class _LoadingView extends StatelessWidget {
+  const _LoadingView();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Get.theme;
+
+    return Stack(
+      children: [
+        // 1. Rich Gradient Background
+        Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                theme.primaryColor,
+                const Color(0xFF4A90E2), // Lighter blue
+                const Color(0xFF1E3A8A), // Deep night blue
+              ],
+            ),
+          ),
+        ),
+
+        // 2. Decorative Atmospheric Blobs (The "Aesthetic" secret)
+        Positioned(
+          top: -50,
+          right: -50,
+          child: _buildBlurredBlob(250, Colors.white.withValues(alpha: 0.1)),
+        ),
+        Positioned(
+          bottom: 100,
+          left: -80,
+          child: _buildBlurredBlob(300, Colors.yellow.withValues(alpha: 0.05)),
+        ),
+
+        // 3. Main Content
+        SafeArea(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  "assets/logo/splash_transparent.png",
+                  // width: 300,
+                  // height: 300,
+                ),
+
+                // 4. Glassmorphism Status Card
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 32, vertical: 24),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.2),
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const Gap(20),
+                          Text(
+                            "Updating Forecast",
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                          const Gap(6),
+                          Text(
+                            "Checking local weather stations...",
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: Colors.white70,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Helper for background blobs
+  Widget _buildBlurredBlob(double size, Color color) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: color,
+      ),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+        child: Container(color: Colors.transparent),
+      ),
+    );
+  }
+
+  // Helper for animated cloud
+  Widget _buildFloatingCloud() {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0, end: 1),
+      duration: const Duration(seconds: 4),
+      curve: Curves.easeInOutQuad,
+      builder: (context, value, child) {
+        return Transform.translate(
+          offset: Offset(0, -10 * (1 - (value - 0.5).abs() * 2)),
+          child: Icon(
+            Icons.cloud_rounded,
+            size: 60,
+            color: Colors.white.withValues(alpha: 0.9),
+          ),
+        );
+      },
+    );
+  }
+}
+
+// =====================================================
+
+class _StateView extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final String buttonText;
+  final VoidCallback onTap;
+
+  const _StateView({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.buttonText,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(kPadding * 2),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: Colors.white, size: 60),
+            const Gap(18),
+            Text(
+              title,
+              style: Get.textTheme.titleLarge?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const Gap(8),
+            Text(
+              subtitle,
+              textAlign: TextAlign.center,
+              style: Get.textTheme.bodyMedium?.copyWith(
+                color: Colors.white70,
+              ),
+            ),
+            const Gap(24),
+            ElevatedButton(
+              onPressed: onTap,
+              child: Text(buttonText),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
