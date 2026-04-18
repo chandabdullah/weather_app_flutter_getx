@@ -129,12 +129,9 @@ class _DesignOptionCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AspectRatio(
-                aspectRatio: 1.6,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(18),
-                  child: preview,
-                ),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(18),
+                child: preview,
               ),
               const Gap(14),
               Row(
@@ -210,9 +207,19 @@ class _ImagePreview extends StatelessWidget {
           ],
         ),
       ),
-      child: Image.asset(
-        assetPath,
-        fit: BoxFit.cover,
+      child: Container(
+        width: double.infinity,
+        constraints: const BoxConstraints(
+          minHeight: 260,
+          maxHeight: 420,
+        ),
+        padding: const EdgeInsets.all(12),
+        alignment: Alignment.center,
+        child: Image.asset(
+          assetPath,
+          fit: BoxFit.contain,
+          alignment: Alignment.center,
+        ),
       ),
     );
   }
