@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:flutter_weather_bg_null_safety/bg/weather_bg.dart';
+import 'package:weather_app/app/modules/home/views/design3_view.dart';
 
 import '../../../services/api_call_status.dart';
 import '/app/constants/app_constants.dart';
@@ -85,7 +86,15 @@ class HomeView extends GetView<HomeController> {
       return Design1View(controller: controller);
     }
 
-    return Design2View(controller: controller);
+    if (design == 2) {
+      return Design2View(controller: controller);
+    }
+
+    if (design == 3) {
+      return Design3View(controller: controller);
+    }
+
+    return Design1View(controller: controller);
   }
 }
 

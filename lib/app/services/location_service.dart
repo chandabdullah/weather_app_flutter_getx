@@ -1,58 +1,121 @@
 import 'package:geocoding/geocoding.dart' as geocoding;
 import 'package:location/location.dart';
+
 import '/app/models/cities_countries_model.dart';
 
 class LocationService {
   LocationService._();
-  static Location location = Location();
 
-  static Future<PermissionStatus> get getPermissionStatus =>
-      location.hasPermission();
+  static final Location location = Location();
+
+  // =====================================================
+  // PERMISSION
+  // =====================================================
+
+  static Future<PermissionStatus> get getPermissionStatus async {
+    return await location.hasPermission();
+  }
 
   static Future<PermissionStatus> requestLocationPermission() async {
-    PermissionStatus permissionGranted;
-    permissionGranted = await location.hasPermission();
-    if (permissionGranted == PermissionStatus.denied) {
-      permissionGranted = await location.requestPermission();
-      return permissionGranted;
+    PermissionStatus permission = await location.hasPermission();
+
+    if (permission == PermissionStatus.denied) {
+      permission = await location.requestPermission();
     }
-    return permissionGranted;
+
+    return permission;
   }
+
+  // =====================================================
+  // SERVICE
+  // =====================================================
 
   static Future<bool> enableLocationService() async {
-    bool serviceEnabled;
-    serviceEnabled = await location.serviceEnabled();
-    if (!serviceEnabled) {
-      serviceEnabled = await location.requestService();
-      return serviceEnabled;
+    bool enabled = await location.serviceEnabled();
+
+    if (!enabled) {
+      enabled = await location.requestService();
     }
-    return serviceEnabled;
+
+    return enabled;
   }
+
+  // =====================================================
+  // LOCATION
+  // =====================================================
 
   static Future<LocationData?> getCurrentLocation() async {
-    Location location = Location();
+    try {
+      final serviceEnabled = await enableLocationService();
 
-    // Check if location services are enabled
-    await enableLocationService();
+      if (!serviceEnabled) return null;
 
-    // Check if the app has permission to access location
-    await requestLocationPermission();
+      final permission = await requestLocationPermission();
 
-    var locationData = await location.getLocation();
+      if (permission != PermissionStatus.granted &&
+          permission != PermissionStatus.grantedLimited) {
+        return null;
+      }
 
-    return locationData;
+      return await location.getLocation();
+    } catch (_) {
+      return null;
+    }
   }
 
-  static Future<City?> getCityFromLatLng(double lat, double lng) async {
-    List<geocoding.Placemark> placeMarks =
-        await geocoding.placemarkFromCoordinates(lat, lng);
+  // =====================================================
+  // GET CITY FROM LAT LNG (FIXED)
+  // =====================================================
 
-    return City(
-      id: 0,
-      city: placeMarks.first.locality,
-      country: placeMarks.first.country,
-      lat: lat,
-      lng: lng,
-    );
+  static Future<City?> getCityFromLatLng(
+    double lat,
+    double lng,
+  ) async {
+    try {
+      final placeMarks = await geocoding.placemarkFromCoordinates(
+        lat,
+        lng,
+      );
+
+      if (placeMarks.isEmpty) return null;
+
+      final place = placeMarks.first;
+
+      final cityName = _getBestCityName(place);
+
+      return City(
+        id: 0,
+        city: cityName,
+        country: place.country ?? "",
+        lat: lat,
+        lng: lng,
+      );
+    } catch (_) {
+      return City(
+        id: 0,
+        city: "Unknown",
+        country: "",
+        lat: lat,
+        lng: lng,
+      );
+    }
+  }
+
+  // =====================================================
+  // BETTER CITY NAME FALLBACKS
+  // =====================================================
+
+  static String _getBestCityName(
+    geocoding.Placemark place,
+  ) {
+    return place.locality?.trim().isNotEmpty == true
+        ? place.locality!
+        : place.subAdministrativeArea?.trim().isNotEmpty == true
+            ? place.subAdministrativeArea!
+            : place.administrativeArea?.trim().isNotEmpty == true
+                ? place.administrativeArea!
+                : place.subLocality?.trim().isNotEmpty == true
+                    ? place.subLocality!
+                    : "Unknown";
   }
 }

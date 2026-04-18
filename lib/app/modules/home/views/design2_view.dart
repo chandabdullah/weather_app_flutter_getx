@@ -23,10 +23,11 @@ import '/utils/datetime_utils.dart';
 
 class Design2View extends GetView {
   const Design2View({
-    Key? key,
+    super.key,
     required this.controller,
-  }) : super(key: key);
+  });
 
+  @override
   final HomeController controller;
 
   @override
@@ -71,10 +72,10 @@ class Design2View extends GetView {
           const Gap(10),
           IconButton(
             onPressed: () {
-              Get.toNamed(Routes.DESIGNS);
+              Get.toNamed(Routes.SETTINGS);
             },
             color: Colors.white,
-            icon: const Icon(Icons.settings),
+            icon: const Icon(Icons.palette_outlined),
           ),
         ],
       ),
@@ -126,10 +127,10 @@ class Design2View extends GetView {
                             const Gap(10),
                             IconButton(
                               onPressed: () {
-                                Get.toNamed(Routes.DESIGNS);
+                                Get.toNamed(Routes.SETTINGS);
                               },
                               color: Colors.white,
-                              icon: const Icon(Icons.settings),
+                              icon: const Icon(Icons.palette_outlined),
                             ),
                           ],
                         ),
@@ -453,8 +454,8 @@ class Design2View extends GetView {
                   ),
                   gridContainer(
                     text: "Visibility",
-                    value:
-                        "${((controller.currentWeather?.visibility ?? 0) / 1000).toStringAsFixed(0)}",
+                    value: ((controller.currentWeather?.visibility ?? 0) / 1000)
+                        .toStringAsFixed(0),
                     value2: "km",
                   ),
                   gridContainer(

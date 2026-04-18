@@ -7,7 +7,6 @@ import 'package:gap/gap.dart';
 
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:weather_app/app/widgets/blur_container.dart';
 import 'package:weather_app/config/theme/my_gradient.dart';
 import '../../../../utils/utils.dart';
@@ -235,10 +234,10 @@ class CurrentWeather extends StatelessWidget {
               const Gap(10),
               IconButton(
                 onPressed: () {
-                  Get.toNamed(Routes.DESIGNS);
+                  Get.toNamed(Routes.SETTINGS);
                 },
                 color: Colors.white,
-                icon: const Icon(Icons.settings),
+                icon: const Icon(Icons.palette_outlined),
               ),
             ],
           ),
