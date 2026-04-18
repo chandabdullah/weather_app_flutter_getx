@@ -1,15 +1,10 @@
-
 # Weather App
 
 ## _Current location weather_
 
-  
-
 ### Objective
 
 Get local weather details, forecasts, and sunrise/sunset info in one app
-
-  
 
 <a  href="https://play.google.com/store/apps/details?id=com.nls.weatherapp"  target="_blank">
 
@@ -35,6 +30,14 @@ Get local weather details, forecasts, and sunrise/sunset info in one app
 <html>
     <div style="display: flex; flex-wrap: wrap;">
       <img style="margin-right: 10px; margin-bottom: 10px;" src="https://github.com/chandabdullah/weather_app_flutter_getx/blob/main/assets/design_2/faisalabad.png" height="500" alt="faisalabad.png"/>
+    </div>
+</html>
+
+### Design 3
+
+<html>
+    <div style="display: flex; flex-wrap: wrap;">
+      <img style="margin-right: 10px; margin-bottom: 10px;" src="https://github.com/chandabdullah/weather_app_flutter_getx/blob/main/assets/design_3/design_3.png" height="500" alt="design_3.png"/>
     </div>
 </html>
 
