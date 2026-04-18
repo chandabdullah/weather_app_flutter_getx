@@ -137,7 +137,7 @@ class HomeController extends GetxController {
 
   getWeatherInfo() {
     BaseClient.safeApiCall(
-      '${EnvironmentConfig.BASE_URL}/data/3.0/onecall',
+      EnvironmentConfig.BASE_URL,
       RequestType.get,
       queryParameters: {
         'lat': latitude,
