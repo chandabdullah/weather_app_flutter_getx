@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:flutter_weather_bg_null_safety/bg/weather_bg.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:weather_app/app/modules/home/views/design3_view.dart';
 
 import '../../../services/api_call_status.dart';
@@ -34,6 +35,14 @@ class HomeView extends GetView<HomeController> {
               _body(),
             ],
           ),
+          bottomNavigationBar:
+              controller.isBannerLoaded && controller.bannerAd != null
+                  ? SizedBox(
+                      width: controller.bannerAd!.size.width.toDouble(),
+                      height: controller.bannerAd!.size.height.toDouble(),
+                      child: AdWidget(ad: controller.bannerAd!),
+                    )
+                  : const SizedBox.shrink(),
         );
       },
     );

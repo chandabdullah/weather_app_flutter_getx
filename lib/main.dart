@@ -1,5 +1,5 @@
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '/app/services/permissions_service.dart';
-
 import '/app/data/local/my_shared_pref.dart';
 import '/config/theme/my_theme.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +18,8 @@ void main() async {
 
   // init shared preference
   await MySharedPref.init();
+
+  await MobileAds.instance.initialize();
 
   AppPermissions appPermissions =
       await PermissionHandlerService.checkPermissionsForApplication();

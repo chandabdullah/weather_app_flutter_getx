@@ -4,6 +4,7 @@
 // ===============================
 
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -46,6 +47,12 @@ class HomeController extends GetxController {
   List<Current> hourlyForecast = [];
   List<Daily> dailyForecast = [];
 
+  // ==================================================
+  // Google Ads initalization
+  // ==================================================
+  BannerAd? bannerAd;
+  bool isBannerLoaded = false;
+
   // =====================================================
   // APP START
   // =====================================================
@@ -54,6 +61,28 @@ class HomeController extends GetxController {
   void onReady() async {
     super.onReady();
     await initializeApp();
+    loadBannerAd();
+  }
+
+  loadBannerAd() {
+    bannerAd = BannerAd(
+      size: AdSize.banner,
+      adUnitId: 'ca-app-pub-5729613540923747/3467449826',
+      // adUnitId: 'ca-app-pub-3940256099942544/6300978111',
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          isBannerLoaded = true;
+          update();
+        },
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+          print("Failed to load banner ad: ${error.message}");
+        },
+      ),
+    );
+
+    bannerAd?.load();
   }
 
   Future<void> initializeApp() async {
