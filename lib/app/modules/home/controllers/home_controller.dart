@@ -19,6 +19,7 @@ import '/app/services/api_call_status.dart';
 import '/app/services/base_client.dart';
 import '/app/services/connectivity_service.dart';
 import '/app/services/location_service.dart';
+import '/app/services/weather_widget_service.dart';
 
 class HomeController extends GetxController {
   // =====================================================
@@ -126,6 +127,11 @@ class HomeController extends GetxController {
 
     final now = DateTime.now();
     final nextCall = cachedDate.add(apiCallAfter);
+
+    print("----------------------------------------");
+    print("nextCall: $nextCall");
+    print("now: $now");
+    print("----------------------------------------");
 
     if (now.isAfter(nextCall) || onRefresh) {
       await getLocationData();
@@ -245,5 +251,12 @@ class HomeController extends GetxController {
     isLoadingLocation = false;
 
     update();
+
+    WeatherWidgetService.updateWidget(
+      weather: response,
+      latitude: latitude,
+      longitude: longitude,
+      cityName: currentCity,
+    );
   }
 }

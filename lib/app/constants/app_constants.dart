@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-Duration apiCallAfter = const Duration(hours: 1);
+Duration apiCallAfter = const Duration(hours: 3);
 
 String? temperatureFont = GoogleFonts.spaceGrotesk().fontFamily;
 // String? temperatureFont = GoogleFonts.chakraPetch().fontFamily;
