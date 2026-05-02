@@ -61,7 +61,9 @@ class HomeController extends GetxController {
   void onReady() async {
     super.onReady();
     await initializeApp();
-    loadBannerAd();
+    Future.delayed(const Duration(milliseconds: 500), () {
+      loadBannerAd();
+    });
   }
 
   loadBannerAd() {
